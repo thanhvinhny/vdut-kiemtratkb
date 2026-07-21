@@ -513,7 +513,6 @@ var danhSachMonHoc = [];
 var listIdDaChon = [];
 var listNhomDuocChon = [];
 
-// BẢNG MÀU PASTEL TỰ ĐỘNG CHO TẤT CẢ CÁC NHÓM LỚP (BẤT KỂ LÀ NHÓM SỐ MẤY)
 var mauBangPastel = ['#f0fdf4', '#f0f9ff', '#fff7ed', '#fdf4ff', '#fef2f2', '#fefce8', '#f5f3ff'];
 var mauTkbPastel = ['#bbf7d0', '#bae6fd', '#fed7aa', '#f5d0fe', '#fecaca', '#fef08a', '#ddd6fe'];
 
@@ -525,6 +524,21 @@ function getMauNhomBang(nhomNum) {
 function getMauNhomTkb(nhomNum) {
     var index = Math.abs(parseInt(nhomNum) || 0) % mauTkbPastel.length;
     return mauTkbPastel[index];
+}
+
+// HÀM SOI TỰ ĐỘNG KHÓA HỌC THẬT (BÓC TỪ CHUỖI TÊN LỚP NẾU CỘT KHOA BỊ SAI)
+function trichXuatKhoaHoc(item) {
+    // Ưu tiên soi chuỗi lớp (VD: "24N38", "25N12", "26N01" -> Bóc số 24, 25, 26)
+    if (item.lop) {
+        var match = item.lop.match(/^(\d+)/);
+        if (match) return parseInt(match[1]);
+    }
+    // Soi chuỗi mã lớp học phần nếu có dạng ...102438, ...102512
+    if (item.malop) {
+        var matchMa = item.malop.match(/10(\d{2})\d{2}/);
+        if (matchMa) return parseInt(matchMa[1]);
+    }
+    return parseInt(item.khoa) || 24;
 }
 
 function tinhSoTinChi(tenMon) {
@@ -581,9 +595,13 @@ function khoiTaoBoLoc() {
 
     for (var i = 0; i < dataGoc.length; i++) {
         var item = dataGoc[i];
+        
+        // Tự động nhận diện khóa học thực sự
+        var khoaThat = trichXuatKhoaHoc(item);
+
         danhSachMonHoc.push({
             id: item.id,
-            khoa: item.khoa,
+            khoa: khoaThat,
             nhom: item.nhom,
             malop: item.malop,
             ten: item.ten,
@@ -597,12 +615,12 @@ function khoiTaoBoLoc() {
             tenChuan: rutGonTenMon(item.ten)
         });
 
-        if (dsKhoa.indexOf(item.khoa) === -1 && item.khoa) {
-            dsKhoa.push(item.khoa);
+        if (dsKhoa.indexOf(khoaThat) === -1 && khoaThat) {
+            dsKhoa.push(khoaThat);
         }
     }
 
-    // Sắp xếp tăng dần Khóa
+    // Sắp xếp khóa học tăng dần (24, 25, 26...)
     dsKhoa.sort(function(a, b){ return a - b; });
 
     var selectKhoa = document.getElementById("select-khoa");
@@ -709,7 +727,6 @@ function renderTKB() {
                 }
                 oBatDau.rowSpan = soTietHop;
                 
-                // Tô màu TKB động
                 var mauNhom = getMauNhomTkb(mon.nhom);
                 oBatDau.innerHTML = '<div class="the-mon-hoc" style="background-color: ' + mauNhom + ';">' +
                     '<b>' + mon.ten + '</b><br>' +
@@ -779,7 +796,6 @@ function renderDanhSachMon() {
         } else if (isTrungTen || isTrungGio) {
             tr.className = 'mon-bi-khoa';
         } else {
-            // Tô màu hàng môn động
             tr.style.backgroundColor = getMauNhomBang(mon.nhom);
         }
 
@@ -914,7 +930,6 @@ function switchTab(tab) {
 
 window.onclick = function(event) { if (event.target == document.getElementById("paymentModal")) closePaymentModal(); }
 
-// KHỞI TẠO BỘ LỌC
 khoiTaoBoLoc();
 renderDanhSachMon();
 renderTKB();
