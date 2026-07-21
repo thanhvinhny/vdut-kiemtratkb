@@ -526,34 +526,6 @@ function getMauNhomTkb(nhomNum) {
     return mauTkbPastel[index];
 }
 
-// BÓC TÁCH KHÓA HỌC THEO ĐÚNG QUY TẮC MÃ LỚP: ...2439A -> 24 là Khóa, 39 là Nhóm
-function trichXuatKhoaHoc(item) {
-    if (item.malop && typeof item.malop === 'string') {
-        // Bỏ ký tự chữ A/B ở cuối nếu có
-        var maXuaLy = item.malop.trim().replace(/[A-Za-z]$/, '');
-        if (maXuaLy.length >= 4) {
-            // Lấy 2 chữ số đứng trước 2 chữ số nhóm cuối
-            var khoaStr = maXuaLy.slice(-4, -2);
-            var k = parseInt(khoaStr);
-            if (!isNaN(k)) return k;
-        }
-    }
-    return parseInt(item.khoa) || 24;
-}
-
-// BÓC TÁCH NHÓM THEO ĐÚNG QUY TẮC MÃ LỚP: ...2439A -> 39 là Nhóm
-function trichXuatNhom(item) {
-    if (item.malop && typeof item.malop === 'string') {
-        var maXuaLy = item.malop.trim().replace(/[A-Za-z]$/, '');
-        if (maXuaLy.length >= 2) {
-            var nhomStr = maXuaLy.slice(-2);
-            var n = parseInt(nhomStr);
-            if (!isNaN(n)) return n;
-        }
-    }
-    return parseInt(item.nhom) || 1;
-}
-
 function tinhSoTinChi(tenMon) {
     if (tenMon.indexOf("TN ") !== -1 || tenMon.indexOf("TN Kỹ thuật số") !== -1) return 0;
     if (tenMon.indexOf("Tín hiệu và hệ thống") !== -1) return 4;
@@ -609,9 +581,8 @@ function khoiTaoBoLoc() {
     for (var i = 0; i < dataGoc.length; i++) {
         var item = dataGoc[i];
         
-        // Tách Khóa và Nhóm trực tiếp theo quy tắc mã lớp
-        var khoaThat = trichXuatKhoaHoc(item);
-        var nhomThat = trichXuatNhom(item);
+        var khoaThat = parseInt(item.khoa);
+        var nhomThat = parseInt(item.nhom);
 
         danhSachMonHoc.push({
             id: item.id,
@@ -629,12 +600,11 @@ function khoiTaoBoLoc() {
             tenChuan: rutGonTenMon(item.ten)
         });
 
-        if (khoaThat && dsKhoa.indexOf(khoaThat) === -1) {
+        if (!isNaN(khoaThat) && dsKhoa.indexOf(khoaThat) === -1) {
             dsKhoa.push(khoaThat);
         }
     }
 
-    // Sắp xếp các khóa tăng dần (24, 25, 26...)
     dsKhoa.sort(function(a, b){ return a - b; });
 
     var selectKhoa = document.getElementById("select-khoa");
@@ -659,7 +629,7 @@ function thayDoiKhoaHoc() {
     var dsNhom = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (danhSachMonHoc[i].khoa == khoaDaChon) {
-            if (dsNhom.indexOf(danhSachMonHoc[i].nhom) === -1 && danhSachMonHoc[i].nhom) {
+            if (dsNhom.indexOf(danhSachMonHoc[i].nhom) === -1 && !isNaN(danhSachMonHoc[i].nhom)) {
                 dsNhom.push(danhSachMonHoc[i].nhom);
             }
         }
