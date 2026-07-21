@@ -20,11 +20,31 @@
             text-transform: uppercase;
         }
 
+        /* KHU VỰC BỘ LỌC KHÓA VÀ NHÓM HỌC */
         .khu-vuc-bo-loc {
             border: 1px solid #000000;
             background-color: #f9f9f9;
             padding: 8px 12px;
             margin-bottom: 8px;
+            position: relative;
+        }
+
+        /* NÚT THU GỌN / MỞ RỘNG BỘ LỌC */
+        .btn-toggle-bo-loc {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 3px;
+        }
+        .btn-toggle-bo-loc:hover {
+            background-color: #e0e0e0;
         }
 
         .dong-loc {
@@ -80,18 +100,21 @@
             box-sizing: border-box;
         }
 
+        /* DÒNG PHÂN NHÓM TIÊU ĐỀ */
         tr.header-nhom { 
             background-color: #e0e0e0 !important; 
             color: #000000; 
             font-weight: bold; 
         }
 
+        /* MÔN ĐÃ CHỌN */
         tr.mon-da-chon {
             background-color: #b0b0b0 !important; 
             color: #000000 !important;
             font-weight: bold;
         }
 
+        /* MÔN BỊ KHÓA (TRÙNG LỊCH/TÊN) */
         tr.mon-bi-khoa {
             background-color: #f5f5f5 !important;
             color: #999999 !important;
@@ -103,6 +126,7 @@
             display: none;
         }
 
+        /* BẢNG TKB BÊN PHẢI */
         table.bang-tkb {
             height: 100%;
         }
@@ -138,6 +162,7 @@
             clear: both;
         }
 
+        /* NÚT ĐĂNG KÝ GÓC DƯỚI BÊN PHẢI */
         .btn-dang-ky {
             position: fixed;
             bottom: 20px;
@@ -379,16 +404,22 @@
 
     <!-- KHU VỰC BỘ LỌC KHÓA HỌC & NHÓM HỌC -->
     <div class="khu-vuc-bo-loc">
-        <div class="dong-loc">
-            <label class="tieu-de-loc">Chọn Khóa học:</label>
-            <select id="select-khoa" onchange="thayDoiKhoaHoc()" style="padding: 4px 8px; font-weight: bold;">
-                <option value="">-- Chọn khóa học --</option>
-            </select>
-        </div>
+        <!-- NÚT THU GỌN / MỞ RỘNG -->
+        <button class="btn-toggle-bo-loc" id="btnToggleBoLoc" onclick="toggleKhungBoLoc()">▲ Thu gọn</button>
 
-        <div class="dong-loc" id="khu-vuc-nhom" style="display: none;">
-            <label class="tieu-de-loc">Chọn Nhóm:</label>
-            <div class="danh-sach-checkbox-nhom" id="container-checkbox-nhom"></div>
+        <!-- NỘI DUNG BỘ LỌC -->
+        <div id="noiDungBoLoc">
+            <div class="dong-loc">
+                <label class="tieu-de-loc">Chọn Khóa học:</label>
+                <select id="select-khoa" onchange="thayDoiKhoaHoc()" style="padding: 4px 8px; font-weight: bold;">
+                    <option value="">-- Chọn khóa học --</option>
+                </select>
+            </div>
+
+            <div class="dong-loc" id="khu-vuc-nhom" style="display: none;">
+                <label class="tieu-de-loc">Chọn Nhóm:</label>
+                <div class="danh-sach-checkbox-nhom" id="container-checkbox-nhom"></div>
+            </div>
         </div>
     </div>
 
@@ -519,6 +550,20 @@ function getMauNhomBang(nhomNum) {
 function getMauNhomTkb(nhomNum) {
     var index = Math.abs(parseInt(nhomNum) || 0) % mauTkbPastel.length;
     return mauTkbPastel[index];
+}
+
+// HÀM BẤM THU GỌN / MỞ RỘNG BỘ LỌC
+function toggleKhungBoLoc() {
+    var noiDung = document.getElementById("noiDungBoLoc");
+    var btn = document.getElementById("btnToggleBoLoc");
+
+    if (noiDung.style.display === "none") {
+        noiDung.style.display = "block";
+        btn.innerText = "▲ Thu gọn";
+    } else {
+        noiDung.style.display = "none";
+        btn.innerText = "▼ Mở rộng";
+    }
 }
 
 function tinhSoTinChi(tenMon) {
@@ -792,7 +837,6 @@ function renderDanhSachMon() {
         }
 
         var isChecked = isDaChon ? 'checked' : '';
-        // Đã bỏ cột STC
         tr.innerHTML = '<td align="center"><input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')"></td>' +
             '<td><font color="#000000">' + mon.ten + '</font></td>' +
             '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
