@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>VDUT - TKB</title>
@@ -17,69 +17,63 @@
             color: #000000;
             margin: 2px 0;
             text-transform: uppercase;
-            font-weight: bold;
         }
 
-        .summary-line {
+        .thong-tin-tc {
             text-align: center;
             font-weight: bold;
-            color: #000000;
             margin-bottom: 6px;
         }
 
-        .container-left {
+        .cot-trai {
             width: 49%;
             float: left;
-            background-color: #ffffff;
             padding: 3px;
             border: 2px solid #000000;
             box-sizing: border-box;
         }
 
-        .container-right {
+        .cot-phai {
             width: 50%;
             float: right;
-            background-color: #ffffff;
             padding: 3px;
             border: 2px solid #000000;
             box-sizing: border-box;
         }
 
-        tr.disabled {
+        tr.mon-bi-khoa {
             background-color: #e0e0e0 !important;
             color: #555555 !important;
         }
 
-        tr.disabled font {
+        tr.mon-bi-khoa font {
             color: #555555 !important;
         }
 
-        tr.disabled input {
+        tr.mon-bi-khoa input {
             display: none;
         }
 
-        tr.registered {
-            background-color: #cccccc !important;
-            color: #000000;
+        /* Mon da tick chon */
+        tr.mon-da-chon {
+            background-color: #a8a8a8 !important; 
             font-weight: bold;
         }
 
-        /* Cố định chiều cao dòng của bảng TKB */
-        table.timetable-grid tr {
+        /* Chieu cao o TKB */
+        table.bang-tkb tr {
             height: 38px;
         }
 
-        /* Xóa toàn bộ đệm và căn chỉnh của ô TD trên bảng TKB */
-        table.timetable-grid td {
+        table.bang-tkb td {
             position: relative;
             padding: 0 !important;
             margin: 0 !important;
             vertical-align: top;
         }
 
-        /* Khối nội dung môn học dãn tràn 100% không gian ô */
-        .event-box {
-            background-color: #f0f0f0;
+        .the-mon-hoc {
+            background-color: #b8b8b8; 
             width: 100%;
             height: 100%;
             box-sizing: border-box;
@@ -89,12 +83,11 @@
             align-items: center;
             font-size: 11px;
             text-align: center;
-            color: #000000;
             padding: 2px;
-            margin: 0;
+            font-weight: bold;
         }
 
-        .clear {
+        .xoa-float {
             clear: both;
         }
     </style>
@@ -103,11 +96,11 @@
 
     <h2>VDUT - TKB</h2>
 
-    <div class="summary-line">
-        SỐ TC: <span id="total-credits" style="color: #000000;">0</span>
+    <div class="thong-tin-tc">
+        SỐ TC: <span id="tong-tc">0</span>
     </div>
 
-    <div class="container-left">
+    <div class="cot-trai">
         <table border="1" cellpadding="2" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
             <thead>
                 <tr bgcolor="#CCCCCC">
@@ -116,19 +109,19 @@
                     <th width="20%">Mã Lớp HP</th>
                     <th width="6%">Nhóm</th>
                     <th width="18%">Giảng Viên</th>
-                    <th width="5%">TC</th>
+                    <th width="5%">STC</th>
                     <th width="19%">TKB</th>
                 </tr>
             </thead>
-            <tbody id="course-list"></tbody>
+            <tbody id="body-danh-sach"></tbody>
         </table>
     </div>
 
-    <div class="container-right">
-        <table class="timetable-grid" border="1" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
+    <div class="cot-phai">
+        <table class="bang-tkb" border="1" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
             <thead>
                 <tr bgcolor="#CCCCCC" style="height: 25px;">
-                    <th width="20%">TKB</th>
+                    <th width="20%">Tiết / Giờ</th>
                     <th width="13%">Thứ 2</th>
                     <th width="13%">Thứ 3</th>
                     <th width="13%">Thứ 4</th>
@@ -137,14 +130,15 @@
                     <th width="15%">Thứ 7</th>
                 </tr>
             </thead>
-            <tbody id="timetable-body"></tbody>
+            <tbody id="body-tkb"></tbody>
         </table>
     </div>
 
-    <div class="clear"></div>
+    <div class="xoa-float"></div>
 
 <script>
-const timeSlots = {
+// Gio hoc cac tiet
+var gioHoc = {
     1: "7h00 - 7h50",
     2: "8h00 - 8h50",
     3: "9h00 - 9h50",
@@ -157,7 +151,8 @@ const timeSlots = {
     10: "16h30 - 17h20"
 };
 
-const rawData = [
+// Data goc
+var dataGoc = [
     { id: 41189, khoa: 24, nhom: 38, malop: "106301026102438", ten: "Kỹ thuật số", sl: 52, gv: "Huỳnh Việt Thắng", tkb: ";;;1-3,H207;;;", tuan: "1-16", lop: "24N38(DT1)" },
     { id: 42345, khoa: 24, nhom: 38, malop: "106302026102438A", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: ";;7-10,C120;;;;", tuan: "13-17", lop: "24N38(DT1)" },
     { id: 42346, khoa: 24, nhom: 38, malop: "106302026102438B", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: ";;;7-10,C120;;;", tuan: "13-17", lop: "24N38(DT1)" },
@@ -202,164 +197,219 @@ const rawData = [
     { id: 41214, khoa: 24, nhom: 41, malop: "106365026102441", ten: "Anh văn chuyên ngành", sl: 42, gv: "Tăng Anh Tuấn", tkb: ";6-8,B104;;;;;", tuan: "1-16", lop: "24N41(DT4)" }
 ];
 
-function getCredits(name) {
-    if (name.includes("(1TC)")) return 1;
-    if (name.includes("PBL")) return 2;
-    if (name.includes("Chủ nghĩa Xã hội khoa học")) return 2;
-    if (name.includes("Anh văn chuyên ngành")) return 2;
+// Ham tinh So tin chi theo ten mon
+function tinhSoTinChi(tenMon) {
+    if (tenMon.indexOf("(1TC)") !== -1) return 1;
+    if (tenMon.indexOf("PBL") !== -1) return 2;
+    if (tenMon.indexOf("Chủ nghĩa Xã hội khoa học") !== -1) return 2;
+    if (tenMon.indexOf("Anh văn chuyên ngành") !== -1) return 2;
     return 3;
 }
 
-function parseTKB(tkbStr) {
-    const days = tkbStr.split(';');
-    const slots = [];
-    const dayNames = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+function docChuoiTKB(chuoiTkb) {
+    var danhSachTkb = [];
+    var cacThu = chuoiTkb.split(';');
+    var tenThu = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
 
-    days.forEach((dayContent, index) => {
-        if (dayContent && dayContent.trim() !== '' && index < 6) {
-            const parts = dayContent.split(',');
-            const timeRange = parts[0];
-            const room = parts[1] || "";
-            if (timeRange) {
-                const [start, end] = timeRange.split('-').map(Number);
-                slots.push({
-                    dayIndex: index,
-                    dayName: dayNames[index],
-                    start: start,
-                    end: end,
-                    room: room,
-                    rawText: `${dayNames[index]} (${start}-${end}) ${room}`
+    for (var i = 0; i < cacThu.length; i++) {
+        var noidung = cacThu[i];
+        if (noidung && noidung.trim() !== '' && i < 6) {
+            var cat = noidung.split(',');
+            var tiet = cat[0];
+            var phong = cat[1] || "";
+            if (tiet) {
+                var gio = tiet.split('-');
+                var tietBatDau = parseInt(gio[0]);
+                var tietKetThuc = parseInt(gio[1]);
+
+                danhSachTkb.push({
+                    thuIndex: i,
+                    tietBD: tietBatDau,
+                    tietKT: tietKetThuc,
+                    phongHoc: phong,
+                    textHienThi: tenThu[i] + " (" + tietBatDau + "-" + tietKetThuc + ") " + phong
                 });
             }
         }
+    }
+    return danhSachTkb;
+}
+
+// Chuan hoa ten mon
+function rutGonTenMon(tenMon) {
+    return tenMon.replace("(Blended learning)", "").trim();
+}
+
+var danhSachMonHoc = [];
+for (var i = 0; i < dataGoc.length; i++) {
+    var item = dataGoc[i];
+    danhSachMonHoc.push({
+        id: item.id,
+        khoa: item.khoa,
+        nhom: item.nhom,
+        malop: item.malop,
+        ten: item.ten,
+        sl: item.sl,
+        gv: item.gv,
+        tkbGoc: item.tkb,
+        tuan: item.tuan,
+        lop: item.lop,
+        stc: tinhSoTinChi(item.ten),
+        chiTietTkb: docChuoiTKB(item.tkb),
+        tenChuan: rutGonTenMon(item.ten)
     });
-    return slots;
 }
 
-function normalizeCourseName(name) {
-    return name.replace(/\(Blended learning\)/g, '').trim();
-}
+var listIdDaChon = [];
 
-const courses = rawData.map(c => ({
-    ...c,
-    stc: getCredits(c.ten),
-    parsedTkb: parseTKB(c.tkb),
-    cleanName: normalizeCourseName(c.ten)
-}));
+function kiemTraTrungLich(mon1, mon2) {
+    for (var a = 0; a < mon1.chiTietTkb.length; a++) {
+        for (var b = 0; b < mon2.chiTietTkb.length; b++) {
+            var slot1 = mon1.chiTietTkb[a];
+            var slot2 = mon2.chiTietTkb[b];
 
-let registeredIds = new Set();
-
-function isTimeConflict(c1, c2) {
-    for (let s1 of c1.parsedTkb) {
-        for (let s2 of c2.parsedTkb) {
-            if (s1.dayIndex === s2.dayIndex) {
-                if (Math.max(s1.start, s2.start) <= Math.min(s1.end, s2.end)) return true;
+            if (slot1.thuIndex === slot2.thuIndex) {
+                var maxStart = Math.max(slot1.tietBD, slot2.tietBD);
+                var minEnd = Math.min(slot1.tietKT, slot2.tietKT);
+                if (maxStart <= minEnd) {
+                    return true;
+                }
             }
         }
     }
     return false;
 }
 
-function initTimetableGrid() {
-    const tbody = document.getElementById('timetable-body');
-    tbody.innerHTML = '';
-    for (let tiet = 1; tiet <= 10; tiet++) {
-        const tr = document.createElement('tr');
-        tr.id = `row-tiet-${tiet}`;
-        
-        let html = `<td align="center" bgcolor="#E0E0E0"><font color="#000000"><b>Tiết ${tiet}</b><br><font size="1">${timeSlots[tiet]}</font></font></td>`;
-        for (let day = 0; day < 6; day++) {
-            html += `<td id="cell-${day}-${tiet}" align="center"></td>`;
+function taoKhungTKB() {
+    var bodyTkb = document.getElementById('body-tkb');
+    bodyTkb.innerHTML = '';
+
+    for (var tiet = 1; tiet <= 10; tiet++) {
+        var tr = document.createElement('tr');
+        tr.id = 'dong-tiet-' + tiet;
+
+        var htmlDong = '<td align="center" bgcolor="#E0E0E0"><font color="#000000"><b>Tiết ' + tiet + '</b><br><font size="1">' + gioHoc[tiet] + '</font></font></td>';
+        for (var thu = 0; thu < 6; thu++) {
+            htmlDong += '<td id="o-' + thu + '-' + tiet + '" align="center"></td>';
         }
-        tr.innerHTML = html;
-        tbody.appendChild(tr);
+        tr.innerHTML = htmlDong;
+        bodyTkb.appendChild(tr);
     }
 }
 
-function renderTimetableEvents() {
-    initTimetableGrid();
+function renderTKB() {
+    taoKhungTKB();
 
-    const registeredCourses = courses.filter(c => registeredIds.has(c.id));
+    var listMonDaChon = [];
+    for (var i = 0; i < danhSachMonHoc.length; i++) {
+        if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
+            listMonDaChon.push(danhSachMonHoc[i]);
+        }
+    }
 
-    registeredCourses.forEach(course => {
-        course.parsedTkb.forEach(slot => {
-            const startCell = document.getElementById(`cell-${slot.dayIndex}-${slot.start}`);
-            if (startCell) {
-                const rowspan = slot.end - slot.start + 1;
-                
-                for (let t = slot.start + 1; t <= slot.end; t++) {
-                    const toRemove = document.getElementById(`cell-${slot.dayIndex}-${t}`);
-                    if (toRemove) toRemove.remove();
+    for (var i = 0; i < listMonDaChon.length; i++) {
+        var mon = listMonDaChon[i];
+        for (var j = 0; j < mon.chiTietTkb.length; j++) {
+            var slot = mon.chiTietTkb[j];
+            var oBatDau = document.getElementById('o-' + slot.thuIndex + '-' + slot.tietBD);
+
+            if (oBatDau) {
+                var soTietHop = slot.tietKT - slot.tietBD + 1;
+
+                for (var t = slot.tietBD + 1; t <= slot.tietKT; t++) {
+                    var oCuaXoa = document.getElementById('o-' + slot.thuIndex + '-' + t);
+                    if (oCuaXoa) {
+                        oCuaXoa.parentNode.removeChild(oCuaXoa);
+                    }
                 }
 
-                startCell.rowSpan = rowspan;
-                startCell.innerHTML = `
-                    <div class="event-box">
-                        <b>${course.ten}</b><br>
-                        <font color="#000000">${course.malop}</font><br>
-                        <font color="#000000">GV: ${course.gv}</font><br>
-                        <font color="#000000">P: ${slot.room || 'N/A'}</font>
-                    </div>
-                `;
+                oBatDau.rowSpan = soTietHop;
+                oBatDau.innerHTML = '<div class="the-mon-hoc">' +
+                    '<b>' + mon.ten + '</b><br>' +
+                    '<font color="#000000">' + mon.malop + '</font><br>' +
+                    '<font color="#000000">GV: ' + mon.gv + '</font><br>' +
+                    '<font color="#000000">P: ' + (slot.phongHoc || 'N/A') + '</font>' +
+                    '</div>';
             }
-        });
-    });
+        }
+    }
 }
 
-function renderCourseList() {
-    const tbody = document.getElementById('course-list');
-    tbody.innerHTML = '';
+function renderDanhSachMon() {
+    var bodyDanhSach = document.getElementById('body-danh-sach');
+    bodyDanhSach.innerHTML = '';
 
-    const registeredCourses = courses.filter(c => registeredIds.has(c.id));
+    var tongTC = 0;
+    var listMonDaChon = [];
+    for (var i = 0; i < danhSachMonHoc.length; i++) {
+        if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
+            listMonDaChon.push(danhSachMonHoc[i]);
+            tongTC += danhSachMonHoc[i].stc;
+        }
+    }
+    document.getElementById('tong-tc').innerText = tongTC;
 
-    const totalCredits = registeredCourses.reduce((sum, c) => sum + c.stc, 0);
-    document.getElementById('total-credits').innerText = totalCredits;
+    for (var i = 0; i < danhSachMonHoc.length; i++) {
+        var mon = danhSachMonHoc[i];
+        var tr = document.createElement('tr');
 
-    courses.forEach(course => {
-        const tr = document.createElement('tr');
-        
-        const isRegistered = registeredIds.has(course.id);
-        const isSameName = registeredCourses.some(rc => rc.cleanName === course.cleanName && rc.id !== course.id);
-        const isConflict = registeredCourses.some(rc => rc.id !== course.id && isTimeConflict(rc, course));
+        var isDaChon = listIdDaChon.indexOf(mon.id) !== -1;
+        var isTrungTen = false;
+        var isTrungGio = false;
 
-        if (isRegistered) {
-            tr.className = 'registered';
-        } else if (isSameName || isConflict) {
-            tr.className = 'disabled';
+        for (var k = 0; k < listMonDaChon.length; k++) {
+            var monSelected = listMonDaChon[k];
+            if (monSelected.id !== mon.id) {
+                if (monSelected.tenChuan === mon.tenChuan) {
+                    isTrungTen = true;
+                }
+                if (kiemTraTrungLich(monSelected, mon)) {
+                    isTrungGio = true;
+                }
+            }
         }
 
-        const tkbText = course.parsedTkb.map(s => s.rawText).join('<br>');
+        if (isDaChon) {
+            tr.className = 'mon-da-chon';
+        } else if (isTrungTen || isTrungGio) {
+            tr.className = 'mon-bi-khoa';
+        }
 
-        tr.innerHTML = `
-            <td align="center">
-                <input type="checkbox" 
-                    ${isRegistered ? 'checked' : ''} 
-                    onchange="toggleRegister(${course.id})">
-            </td>
-            <td><font color="#000000">${course.ten}</font></td>
-            <td><font size="2" color="#000000">${course.malop}</font></td>
-            <td align="center"><font color="#000000">${course.nhom}</font></td>
-            <td><font color="#000000">${course.gv}</font></td>
-            <td align="center"><font color="#000000">${course.stc}</font></td>
-            <td><font size="1" color="#000000">${tkbText || '-'}</font></td>
-        `;
+        var textTkb = '';
+        for (var m = 0; m < mon.chiTietTkb.length; m++) {
+            textTkb += mon.chiTietTkb[m].textHienThi + '<br>';
+        }
 
-        tbody.appendChild(tr);
-    });
-}
+        var isChecked = isDaChon ? 'checked' : '';
 
-function toggleRegister(id) {
-    if (registeredIds.has(id)) {
-        registeredIds.delete(id);
-    } else {
-        registeredIds.add(id);
+        tr.innerHTML = '<td align="center">' +
+            '<input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')">' +
+            '</td>' +
+            '<td><font color="#000000">' + mon.ten + '</font></td>' +
+            '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
+            '<td align="center"><font color="#000000">' + mon.nhom + '</font></td>' +
+            '<td><font color="#000000">' + mon.gv + '</font></td>' +
+            '<td align="center"><font color="#000000">' + mon.stc + '</font></td>' +
+            '<td><font size="1" color="#000000">' + (textTkb || '-') + '</font></td>';
+
+        bodyDanhSach.appendChild(tr);
     }
-    renderCourseList();
-    renderTimetableEvents();
 }
 
-renderCourseList();
-renderTimetableEvents();
+function clickChonMon(idMon) {
+    var index = listIdDaChon.indexOf(idMon);
+    if (index !== -1) {
+        listIdDaChon.splice(index, 1);
+    } else {
+        listIdDaChon.push(idMon);
+    }
+
+    renderDanhSachMon();
+    renderTKB();
+}
+
+renderDanhSachMon();
+renderTKB();
 </script>
 
 </body>
