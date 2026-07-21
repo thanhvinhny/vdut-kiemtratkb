@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VDUT - TKB</title>
     <style>
         body {
@@ -111,6 +112,242 @@
         .xoa-float {
             clear: both;
         }
+
+        /* NÚT ĐĂNG KÝ GÓC DƯỚI BÊN PHẢI */
+        .btn-dang-ky {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 999;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-dang-ky:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* MODAL THANH TOÁN */
+        .modal-payment { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+            z-index: 1000; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        .modal-content { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            border-radius: 6px; 
+            padding: 25px; 
+            width: 95%; 
+            max-width: 420px; 
+            text-align: center; 
+            position: relative; 
+            box-sizing: border-box;
+        }
+
+        .modal-title { 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            margin-top: 0; 
+            margin-bottom: 5px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .modal-price { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            color: #000000; 
+        }
+
+        /* VÙNG LIÊN HỆ FACEBOOK */
+        .contact-box {
+            margin: 25px 0;
+            padding: 15px;
+            border: 1px dashed #000000;
+            border-radius: 6px;
+            background-color: #fafafa;
+        }
+
+        .contact-box p {
+            margin: 0 0 12px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        .fb-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #1877f2;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .fb-link:hover {
+            transform: scale(1.05);
+            text-decoration: underline;
+        }
+
+        .fb-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .tab-buttons { 
+            display: flex; 
+            border-bottom: 2px solid #000000; 
+            margin-bottom: 20px; 
+        }
+
+        .tab-btn { 
+            font-family: inherit; 
+            flex: 1; 
+            padding: 10px 5px; 
+            background: none; 
+            border: none; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+        }
+
+        .tab-btn.active { 
+            background-color: #000000; 
+            color: #ffffff; 
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .qr-img { 
+            width: 200px; 
+            height: 200px; 
+            border: 1px solid #ccc; 
+            margin: 0 auto 10px auto; 
+            display: block;
+        }
+
+        .status-payment { 
+            font-size: 0.85rem; 
+            color: #555555; 
+            margin: 10px 0 0 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+        }
+
+        .spinner { 
+            width: 14px; 
+            height: 14px; 
+            border: 2px solid #ccc; 
+            border-top: 2px solid #000; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        .credit-form input { 
+            font-family: inherit; 
+            width: 100%; 
+            padding: 10px; 
+            margin: 8px 0; 
+            border: 1px solid #000000; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 0.9rem; 
+        }
+
+        .card-number-wrapper { position: relative; width: 100%; }
+
+        .card-logos { 
+            position: absolute; 
+            right: 12px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            display: flex; 
+            gap: 6px; 
+            pointer-events: none; 
+            align-items: center; 
+        }
+
+        .card-logo-img { 
+            height: 20px; 
+            width: auto; 
+            opacity: 0.15; 
+            transition: opacity 0.2s ease; 
+        }
+
+        .card-logo-img.active { opacity: 1; }
+
+        .btn-submit-pay { 
+            font-family: inherit; 
+            width: 100%; 
+            padding: 12px 0; 
+            background-color: #000000; 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .close-modal-btn { 
+            position: absolute; 
+            top: 10px; 
+            right: 15px; 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+        }
+
+        .back-modal-btn { 
+            position: absolute; 
+            top: 12px; 
+            left: 15px; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            color: #000000; 
+        }
+
+        .payment-timer { 
+            font-size: 0.9rem; 
+            color: #000000; 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            letter-spacing: 1px; 
+        }
     </style>
 </head>
 <body>
@@ -157,6 +394,66 @@
 
     <div class="xoa-float"></div>
 
+    <button class="btn-dang-ky" onclick="openFeaturesModal()">ĐĂNG KÝ</button>
+
+    <div class="modal-payment" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-modal-btn" onclick="closePaymentModal()">&times;</span>
+            
+            <div id="viewFeatures">
+                <div class="modal-title">VDUT PREMIUM</div>
+                <div class="modal-price" style="margin-top: 5px;">69.000 đ</div>
+                
+                <div class="contact-box">
+                    <p>Để biết thêm thông tin chi tiết các chức năng:</p>
+                    <a href="https://j2c.cc/admin" target="_blank" class="fb-link">
+                        <svg class="fb-icon" viewBox="0 0 24 24" fill="#1877f2">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        <span>Facebook Support</span>
+                    </a>
+                </div>
+
+                <button class="btn-submit-pay" onclick="goToPaymentMethods()">ĐĂNG KÝ</button>
+            </div>
+
+            <div id="viewPayment" style="display: none;">
+                <button class="back-modal-btn" onclick="backToFeatures()">&larr;</button>
+                <div class="modal-title">ĐĂNG KÝ VDUT PREMIUM</div>
+                <div class="payment-timer" id="paymentCountdown">Thời gian thanh toán còn lại: 10:00</div>
+                <div class="modal-price">69.000 đ</div>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="btnTabQr" onclick="switchTab('qr')">VietQR</button>
+                    <button class="tab-btn" id="btnTabCard" onclick="switchTab('card')">CARD</button>
+                </div>
+                
+                <div class="tab-content active" id="contentQr">
+                    <img class="qr-img" id="imgVietQR" src="" alt="Mã VietQR">
+                    <div class="status-payment"><div class="spinner"></div><span>Đang chờ quét mã...</span></div>
+                </div>
+                
+                <div class="tab-content" id="contentCard">
+                    <form class="credit-form" onsubmit="validateAndPayCard(event)">
+                        <div class="card-number-wrapper">
+                            <input type="text" id="cardNumberInput" placeholder="Số thẻ" maxlength="19" required oninput="handleCardNumberInput(this)">
+                            <div class="card-logos">
+                                <img class="card-logo-img" id="logoVisa" src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa">
+                                <img class="card-logo-img" id="logoMastercard" src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" placeholder="MM/YY" maxlength="5" required id="cardExpiryInput" oninput="handleCardExpiryInput(this)">
+                            <input type="password" placeholder="CVC" maxlength="4" required id="cardCvcInput">
+                        </div>
+                        <input type="text" placeholder="Tên chủ thẻ" required id="cardNameInput" oninput="this.value = this.value.toUpperCase()">
+                        <button type="submit" class="btn-submit-pay">Thanh Toán Ngay</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
 // Gio hoc cac tiet
 var gioHoc = {
@@ -172,7 +469,6 @@ var gioHoc = {
     10: "16h30 - 17h20"
 };
 
-// Data goc
 var dataGoc = [
     { id: 41189, khoa: 24, nhom: 38, malop: "106301026102438", ten: "Kỹ thuật số", sl: 52, gv: "Huỳnh Việt Thắng", tkb: ";;;1-3,H207;;;", tuan: "1-16", lop: "24N38(DT1)" },
     { id: 42345, khoa: 24, nhom: 38, malop: "106302026102438A", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: ";;7-10,C120;;;;", tuan: "13-17", lop: "24N38(DT1)" },
@@ -228,7 +524,6 @@ function tinhSoTinChi(tenMon) {
     return 3;
 }
 
-// Hàm lấy ký tự phân nhóm (VD: 38A, 38B hoặc chỉ 38)
 function layTenNhomCon(mon) {
     var kyTuCuoi = mon.malop.slice(-1);
     if (kyTuCuoi === 'A' || kyTuCuoi === 'B') {
@@ -355,7 +650,6 @@ function renderTKB() {
 
                 oBatDau.rowSpan = soTietHop;
                 
-                // Đã chỉnh hiển thị TKB chuẩn theo yêu cầu mới
                 var tenNhomHienThi = layTenNhomCon(mon);
                 var phongHienThi = slot.phongHoc || 'N/A';
 
@@ -454,6 +748,138 @@ function clickChonMon(idMon) {
 
     renderDanhSachMon();
     renderTKB();
+}
+
+var paymentInterval = null;
+var countdownInterval = null;
+
+function openFeaturesModal() { 
+    document.getElementById("viewFeatures").style.display = "block"; 
+    document.getElementById("viewPayment").style.display = "none"; 
+    document.getElementById("paymentModal").style.display = "flex"; 
+}
+
+function closePaymentModal() { 
+    document.getElementById("paymentModal").style.display = "none"; 
+    stopTimers(); 
+}
+
+function backToFeatures() { 
+    document.getElementById("viewFeatures").style.display = "block"; 
+    document.getElementById("viewPayment").style.display = "none"; 
+    stopTimers(); 
+}
+
+function stopTimers() { 
+    if (paymentInterval) clearInterval(paymentInterval); 
+    if (countdownInterval) clearInterval(countdownInterval); 
+}
+
+function goToPaymentMethods() {
+    document.getElementById("viewFeatures").style.display = "none";
+    document.getElementById("viewPayment").style.display = "block";
+    var urlVietQr = "https://img.vietqr.io/image/ICB-0969435625-compact2.png?amount=100000&addInfo=" + encodeURIComponent("DANG KY VDUT PREMIUM") + "&accountName=" + encodeURIComponent("PHAN LE THANH VINH");
+    document.getElementById("imgVietQR").src = urlVietQr;
+    startCheckingPayment("100000", "VDUT PREMIUM");
+    startCountdownTimer(600);
+}
+
+function startCountdownTimer(seconds) {
+    var timerDisplay = document.getElementById("paymentCountdown");
+    countdownInterval = setInterval(function() {
+        seconds--;
+        var mins = Math.floor(seconds / 60); 
+        var secs = seconds % 60;
+        timerDisplay.innerText = "Thời gian thanh toán còn lại: " + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+        if (seconds <= 0) { 
+            clearInterval(countdownInterval); 
+            closePaymentModal(); 
+        }
+    }, 1000);
+}
+
+function startCheckingPayment(amount, description) {
+    paymentInterval = setInterval(function() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://oauth.casso.vn/v2/transactions?pageSize=5&sort=DESC", true);
+        xhr.setRequestHeader("Authorization", "Apikey KHONG_GHI_CHU_XOA_SACH_MA_API_KEY_CUA_BAN_TAI_DAY");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var res = JSON.parse(xhr.responseText);
+                if (res && res.data && res.data.records) {
+                    for (var i = 0; i < res.data.records.length; i++) {
+                        if (res.data.records[i].amount >= parseInt(amount) && res.data.records[i].description.toUpperCase().indexOf(description.toUpperCase()) !== -1) {
+                            clearInterval(paymentInterval);
+                            alert("Kích hoạt Premium thành công!");
+                            closePaymentModal();
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+        xhr.send();
+    }, 3000);
+}
+
+function handleCardNumberInput(input) {
+    var value = input.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
+    var parts = []; 
+    for (var i = 0; i < value.length; i += 4) { 
+        parts.push(value.substring(i, i + 4)); 
+    }
+    input.value = parts.join(' ');
+    document.getElementById("logoVisa").classList.remove("active"); 
+    document.getElementById("logoMastercard").classList.remove("active");
+    if (value.indexOf('4') === 0) document.getElementById("logoVisa").classList.add("active");
+    else if (value.indexOf('5') === 0) document.getElementById("logoMastercard").classList.add("active");
+}
+
+function handleCardExpiryInput(input) {
+    var value = input.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
+    input.value = value.length >= 2 ? value.substring(0, 2) + '/' + value.substring(2, 4) : value;
+}
+
+function checkLuhn(cardNumber) {
+    var cleanNumber = cardNumber.replace(/\s+/g, ''); 
+    if (cleanNumber.length < 13) return false;
+    var sum = 0; 
+    var shouldDouble = false;
+    for (var i = cleanNumber.length - 1; i >= 0; i--) {
+        var digit = parseInt(cleanNumber.charAt(i));
+        if (shouldDouble) { digit *= 2; if (digit > 9) digit -= 9; }
+        sum += digit; 
+        shouldDouble = !shouldDouble;
+    }
+    return (sum % 10 === 0);
+}
+
+function validateAndPayCard(event) { 
+    event.preventDefault(); 
+    if (!checkLuhn(document.getElementById("cardNumberInput").value)) { 
+        alert("Số thẻ không hợp lệ!"); 
+        return; 
+    } 
+    alert("Cảm ơn bạn! Hệ thống đang xử lý giao dịch thẻ."); 
+}
+
+function switchTab(tab) {
+    var keys = ['qr', 'card'];
+    var ids = { qr: { btn: 'btnTabQr', content: 'contentQr' }, card: { btn: 'btnTabCard', content: 'contentCard' } };
+    for (var i = 0; i < keys.length; i++) {
+        if (keys[i] === tab) { 
+            document.getElementById(ids[keys[i]].btn).classList.add("active"); 
+            document.getElementById(ids[keys[i]].content).classList.add("active"); 
+        } else { 
+            document.getElementById(ids[keys[i]].btn).classList.remove("active"); 
+            document.getElementById(ids[keys[i]].content).classList.remove("active"); 
+        }
+    }
+}
+
+window.onclick = function(event) { 
+    if (event.target == document.getElementById("paymentModal")) closePaymentModal(); 
 }
 
 renderDanhSachMon();
