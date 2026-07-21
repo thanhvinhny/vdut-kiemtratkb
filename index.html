@@ -526,25 +526,32 @@ function getMauNhomTkb(nhomNum) {
     return mauTkbPastel[index];
 }
 
-// HÀM TRÍCH XUẤT KHÓA HỌC CHUẨN XÁC (CHỈ LẤY CÁC KHÓA TỪ 18 ĐẾN 30)
+// BÓC TÁCH KHÓA HỌC THEO ĐÚNG QUY TẮC MÃ LỚP: ...2439A -> 24 là Khóa, 39 là Nhóm
 function trichXuatKhoaHoc(item) {
-    // 1. Kiểm tra trực tiếp item.khoa nếu nằm trong khoảng hợp lệ (Ví dụ: 20 đến 26)
-    var kDirect = parseInt(item.khoa);
-    if (kDirect >= 18 && kDirect <= 30) return kDirect;
-
-    // 2. Tìm trong tên Lớp (VD: "24N38", "25N12", "26N01" -> bắt được 24, 25, 26)
-    if (item.lop) {
-        var matchLop = item.lop.match(/(1[8-9]|2[0-9]|3[0-0])N/i) || item.lop.match(/(1[8-9]|2[0-9]|3[0-0])/);
-        if (matchLop) return parseInt(matchLop[1]);
+    if (item.malop && typeof item.malop === 'string') {
+        // Bỏ ký tự chữ A/B ở cuối nếu có
+        var maXuaLy = item.malop.trim().replace(/[A-Za-z]$/, '');
+        if (maXuaLy.length >= 4) {
+            // Lấy 2 chữ số đứng trước 2 chữ số nhóm cuối
+            var khoaStr = maXuaLy.slice(-4, -2);
+            var k = parseInt(khoaStr);
+            if (!isNaN(k)) return k;
+        }
     }
+    return parseInt(item.khoa) || 24;
+}
 
-    // 3. Tìm trong Mã lớp HP (VD: 106301026102438 -> Bắt số 24 trước 2 số nhóm cuối)
-    if (item.malop) {
-        var matchMa = item.malop.match(/(1[8-9]|2[0-9]|3[0-0])\d{2}[A-Z]?$/);
-        if (matchMa) return parseInt(matchMa[1]);
+// BÓC TÁCH NHÓM THEO ĐÚNG QUY TẮC MÃ LỚP: ...2439A -> 39 là Nhóm
+function trichXuatNhom(item) {
+    if (item.malop && typeof item.malop === 'string') {
+        var maXuaLy = item.malop.trim().replace(/[A-Za-z]$/, '');
+        if (maXuaLy.length >= 2) {
+            var nhomStr = maXuaLy.slice(-2);
+            var n = parseInt(nhomStr);
+            if (!isNaN(n)) return n;
+        }
     }
-
-    return null; // Loại bỏ các số rác như 1, 0
+    return parseInt(item.nhom) || 1;
 }
 
 function tinhSoTinChi(tenMon) {
@@ -602,12 +609,14 @@ function khoiTaoBoLoc() {
     for (var i = 0; i < dataGoc.length; i++) {
         var item = dataGoc[i];
         
+        // Tách Khóa và Nhóm trực tiếp theo quy tắc mã lớp
         var khoaThat = trichXuatKhoaHoc(item);
+        var nhomThat = trichXuatNhom(item);
 
         danhSachMonHoc.push({
             id: item.id,
             khoa: khoaThat,
-            nhom: item.nhom,
+            nhom: nhomThat,
             malop: item.malop,
             ten: item.ten,
             sl: item.sl,
@@ -620,13 +629,12 @@ function khoiTaoBoLoc() {
             tenChuan: rutGonTenMon(item.ten)
         });
 
-        // Chỉ thêm khóa hợp lệ (loại bỏ null/rác)
         if (khoaThat && dsKhoa.indexOf(khoaThat) === -1) {
             dsKhoa.push(khoaThat);
         }
     }
 
-    // Sắp xếp khóa tăng dần (24, 25, 26...)
+    // Sắp xếp các khóa tăng dần (24, 25, 26...)
     dsKhoa.sort(function(a, b){ return a - b; });
 
     var selectKhoa = document.getElementById("select-khoa");
