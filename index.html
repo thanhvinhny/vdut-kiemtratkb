@@ -45,7 +45,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px 15px;
-            max-height: 100px;
+            max-height: 120px;
             overflow-y: auto;
             border: 1px solid #ccc;
             padding: 5px 8px;
@@ -87,12 +87,6 @@
             color: #000000; 
             font-weight: bold; 
         }
-
-        /* TÔNG MÀU PASTEL NHẸ NHÀNG */
-        tr.mon-nhom-38 { background-color: #f0fdf4; }
-        tr.mon-nhom-39 { background-color: #f0f9ff; }
-        tr.mon-nhom-40 { background-color: #fff7ed; }
-        tr.mon-nhom-41 { background-color: #fdf4ff; }
 
         /* MÔN ĐÃ CHỌN */
         tr.mon-da-chon {
@@ -144,11 +138,6 @@
             font-weight: bold;
             color: #000000;
         }
-
-        .the-mon-hoc.nhom-38 { background-color: #bbf7d0; }
-        .the-mon-hoc.nhom-39 { background-color: #bae6fd; }
-        .the-mon-hoc.nhom-40 { background-color: #fed7aa; }
-        .the-mon-hoc.nhom-41 { background-color: #f5d0fe; }
 
         .xoa-float {
             clear: both;
@@ -405,10 +394,6 @@
 
         <div class="dong-loc" id="khu-vuc-nhom" style="display: none;">
             <label class="tieu-de-loc">Chọn Nhóm:</label>
-            <div style="margin-bottom: 4px;">
-                <button onclick="chonTatCaNhom(true)">Chọn tất cả</button>
-                <button onclick="chonTatCaNhom(false)">Bỏ chọn tất cả</button>
-            </div>
             <div class="danh-sach-checkbox-nhom" id="container-checkbox-nhom"></div>
         </div>
     </div>
@@ -528,6 +513,20 @@ var danhSachMonHoc = [];
 var listIdDaChon = [];
 var listNhomDuocChon = [];
 
+// BẢNG MÀU PASTEL TỰ ĐỘNG CHO TẤT CẢ CÁC NHÓM LỚP (BẤT KỂ LÀ NHÓM SỐ MẤY)
+var mauBangPastel = ['#f0fdf4', '#f0f9ff', '#fff7ed', '#fdf4ff', '#fef2f2', '#fefce8', '#f5f3ff'];
+var mauTkbPastel = ['#bbf7d0', '#bae6fd', '#fed7aa', '#f5d0fe', '#fecaca', '#fef08a', '#ddd6fe'];
+
+function getMauNhomBang(nhomNum) {
+    var index = Math.abs(parseInt(nhomNum) || 0) % mauBangPastel.length;
+    return mauBangPastel[index];
+}
+
+function getMauNhomTkb(nhomNum) {
+    var index = Math.abs(parseInt(nhomNum) || 0) % mauTkbPastel.length;
+    return mauTkbPastel[index];
+}
+
 function tinhSoTinChi(tenMon) {
     if (tenMon.indexOf("TN ") !== -1 || tenMon.indexOf("TN Kỹ thuật số") !== -1) return 0;
     if (tenMon.indexOf("Tín hiệu và hệ thống") !== -1) return 4;
@@ -574,11 +573,9 @@ function rutGonTenMon(tenMon) {
     return tenMon.replace("(Blended learning)", "").trim();
 }
 
-// KHỞI TẠO BỘ LỌC ĐỘNG (KHÓA HỌC & NHÓM)
 function khoiTaoBoLoc() {
     if (typeof dataGoc === 'undefined') return;
 
-    // Chuẩn hóa dữ liệu ban đầu
     danhSachMonHoc = [];
     var dsKhoa = [];
 
@@ -600,13 +597,14 @@ function khoiTaoBoLoc() {
             tenChuan: rutGonTenMon(item.ten)
         });
 
-        if (dsKhoa.indexOf(item.khoa) === -1) {
+        if (dsKhoa.indexOf(item.khoa) === -1 && item.khoa) {
             dsKhoa.push(item.khoa);
         }
     }
 
-    // Đổ danh sách Khóa vào Dropdown
+    // Sắp xếp tăng dần Khóa
     dsKhoa.sort(function(a, b){ return a - b; });
+
     var selectKhoa = document.getElementById("select-khoa");
     selectKhoa.innerHTML = '<option value="">-- Chọn khóa học --</option>';
     for (var k = 0; k < dsKhoa.length; k++) {
@@ -614,7 +612,6 @@ function khoiTaoBoLoc() {
     }
 }
 
-// KHI CHỌN KHÓA HỌC -> TỰ ĐỘNG TẠO CHECKBOX NHÓM
 function thayDoiKhoaHoc() {
     var khoaDaChon = document.getElementById("select-khoa").value;
     var khuVucNhom = document.getElementById("khu-vuc-nhom");
@@ -627,11 +624,10 @@ function thayDoiKhoaHoc() {
         return;
     }
 
-    // Lọc danh sách Nhóm thuộc Khóa đã chọn
     var dsNhom = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (danhSachMonHoc[i].khoa == khoaDaChon) {
-            if (dsNhom.indexOf(danhSachMonHoc[i].nhom) === -1) {
+            if (dsNhom.indexOf(danhSachMonHoc[i].nhom) === -1 && danhSachMonHoc[i].nhom) {
                 dsNhom.push(danhSachMonHoc[i].nhom);
             }
         }
@@ -639,9 +635,8 @@ function thayDoiKhoaHoc() {
 
     dsNhom.sort(function(a, b){ return a - b; });
 
-    // Tạo các ô checkbox nhóm
     var htmlCheckbox = '';
-    listNhomDuocChon = []; // Reset nhóm
+    listNhomDuocChon = []; 
     for (var n = 0; n < dsNhom.length; n++) {
         var nhomNum = dsNhom[n];
         htmlCheckbox += '<label class="item-nhom-checkbox">' +
@@ -652,14 +647,6 @@ function thayDoiKhoaHoc() {
     containerNhom.innerHTML = htmlCheckbox;
     khuVucNhom.style.display = "flex";
     renderDanhSachMon();
-}
-
-function chonTatCaNhom(status) {
-    var checkboxes = document.querySelectorAll("#container-checkbox-nhom input[type='checkbox']");
-    for (var i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].checked = status;
-    }
-    capNhatNhomDuocChon();
 }
 
 function capNhatNhomDuocChon() {
@@ -721,7 +708,10 @@ function renderTKB() {
                     if (oCuaXoa) oCuaXoa.parentNode.removeChild(oCuaXoa);
                 }
                 oBatDau.rowSpan = soTietHop;
-                oBatDau.innerHTML = '<div class="the-mon-hoc nhom-' + mon.nhom + '">' +
+                
+                // Tô màu TKB động
+                var mauNhom = getMauNhomTkb(mon.nhom);
+                oBatDau.innerHTML = '<div class="the-mon-hoc" style="background-color: ' + mauNhom + ';">' +
                     '<b>' + mon.ten + '</b><br>' +
                     '<span>' + layTenNhomCon(mon) + '</span><br>' +
                     '<span>GV: ' + mon.gv + '</span><br>' +
@@ -738,7 +728,6 @@ function renderDanhSachMon() {
 
     var khoaDaChon = document.getElementById("select-khoa").value;
 
-    // LỌC MÔN HỌC THEO KHÓA VÀ NHÓM NGHĨA LÀ CHỈ HIỆN MÔN MÀ USER TICK
     var danhSachHienThi = [];
     if (khoaDaChon && listNhomDuocChon.length > 0) {
         for (var i = 0; i < danhSachMonHoc.length; i++) {
@@ -749,7 +738,6 @@ function renderDanhSachMon() {
         }
     }
 
-    // TÍNH SỐ TÍN CHỈ CÁC MÔN ĐÃ TICK CHỌN TRONG TKB
     var tongTC = 0;
     var listMonSelectedObj = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
@@ -786,9 +774,14 @@ function renderDanhSachMon() {
             }
         }
 
-        if (isDaChon) tr.className = 'mon-da-chon';
-        else if (isTrungTen || isTrungGio) tr.className = 'mon-bi-khoa';
-        else tr.className = 'mon-nhom-' + mon.nhom;
+        if (isDaChon) {
+            tr.className = 'mon-da-chon';
+        } else if (isTrungTen || isTrungGio) {
+            tr.className = 'mon-bi-khoa';
+        } else {
+            // Tô màu hàng môn động
+            tr.style.backgroundColor = getMauNhomBang(mon.nhom);
+        }
 
         var textTkb = '';
         for (var m = 0; m < mon.chiTietTkb.length; m++) {
@@ -921,7 +914,7 @@ function switchTab(tab) {
 
 window.onclick = function(event) { if (event.target == document.getElementById("paymentModal")) closePaymentModal(); }
 
-// CHẠY TRANG WEB
+// KHỞI TẠO BỘ LỌC
 khoiTaoBoLoc();
 renderDanhSachMon();
 renderTKB();
