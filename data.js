@@ -1,16 +1,5 @@
 var dataGoc = [
-    {
-        "id": 1,
-        "khoa": 24,
-        "nhom": 1,
-        "malop": "MalopHP",
-        "ten": "TenLopHP",
-        "sl": 40,
-        "gv": "MaGV",
-        "tkb": "TKB",
-        "tuan": "TuanHoc",
-        "lop": "clc"
-    },
+    
     {
         "id": 42055,
         "khoa": 24,
