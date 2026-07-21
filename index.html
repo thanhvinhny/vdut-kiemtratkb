@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VDUT - TKB</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 5px;
+            font-size: 13px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #000000;
+            margin: 2px 0;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .summary-line {
+            text-align: center;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 6px;
+        }
+
+        .container-left {
+            width: 48%;
+            float: left;
+            background-color: #ffffff;
+            padding: 3px;
+            border: 2px solid #000000;
+            box-sizing: border-box;
+        }
+
+        .container-right {
+            width: 51%;
+            float: right;
+            background-color: #ffffff;
+            padding: 3px;
+            border: 2px solid #000000;
+            box-sizing: border-box;
+        }
+
+        /* Style mờ dòng kiểu đen xám */
+        tr.disabled {
+            background-color: #e0e0e0 !important;
+            color: #555555 !important;
+        }
+
+        tr.disabled font {
+            color: #555555 !important;
+        }
+
+        tr.disabled input {
+            display: none; 
+        }
+
+        tr.registered {
+            background-color: #cccccc !important;
+            color: #000000 !weight: bold;
+        }
+
+     
+        .event-box {
+            background-color: #f0f0f0;
+            border: 1px solid #000000;
+            padding: 2px;
+            font-size: 11px;
+            text-align: center;
+            color: #000000;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>VDUT - TKB</h2>
+
+    <div class="summary-line">
+        SỐ TC: <span id="total-credits" style="color: #000000;">0</span> TC
+    </div>
+
+    <div class="container-left">
+        <table border="1" cellpadding="2" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
+            <thead>
+                <tr bgcolor="#CCCCCC">
+                    <th width="5%">Chọn</th>
+                    <th width="32%">Tên Môn Học</th>
+                    <th width="22%">Mã Lớp HP</th>
+                    <th width="10%">Nhóm HP</th>
+                    <th width="6%">STC</th>
+                    <th width="25%">TKB</th>
+                </tr>
+            </thead>
+            <tbody id="course-list">
+        
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="container-right">
+        <table border="1" cellpadding="2" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
+            <thead>
+                <tr bgcolor="#CCCCCC">
+                    <th width="20%">Tiết / Giờ</th>
+                    <th width="13%">Thứ 2</th>
+                    <th width="13%">Thứ 3</th>
+                    <th width="13%">Thứ 4</th>
+                    <th width="13%">Thứ 5</th>
+                    <th width="13%">Thứ 6</th>
+                    <th width="15%">Thứ 7</th>
+                </tr>
+            </thead>
+            <tbody id="timetable-body">
+                <!-- Chèn bằng JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clear"></div>
+
+<script>
+// KHUNG GIỜ CÁC TIẾT HỌC
+const timeSlots = {
+    1: "7h00 - 7h50",
+    2: "8h00 - 8h50",
+    3: "9h00 - 9h50",
+    4: "10h00 - 10h50",
+    5: "11h00 - 11h50",
+    6: "12h30 - 13h20",
+    7: "13h30 - 14h20",
+    8: "14h30 - 15h20",
+    9: "15h30 - 16h20",
+    10: "16h30 - 17h20"
+};
+
+const rawData = [
+    {id: 41189, khoa: 24, nhom: 38, malop: "106301026102438", ten: "Kỹ thuật số", sl: 52, tkb: ";;;1-3,H207;;;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 42345, khoa: 24, nhom: 38, malop: "106302026102438A", ten: "TN Kỹ thuật số (1TC)", sl: 26, tkb: ";;7-10,C120;;;;", tuan: "13-17", lop: "24N38(DT1)"},
+    {id: 42346, khoa: 24, nhom: 38, malop: "106302026102438B", ten: "TN Kỹ thuật số (1TC)", sl: 26, tkb: ";;;7-10,C120;;;", tuan: "13-17", lop: "24N38(DT1)"},
+    {id: 41190, khoa: 24, nhom: 38, malop: "106334026102438", ten: "Tín hiệu và hệ thống", sl: 52, tkb: ";;3-5,F207;;;;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 42384, khoa: 24, nhom: 38, malop: "106335026102438A", ten: "TN Tín hiệu và hệ thống", sl: 26, tkb: "7-10,C214;;;;;;", tuan: "13-17", lop: "24N38(DT1)"},
+    {id: 42385, khoa: 24, nhom: 38, malop: "106335026102438B", ten: "TN Tín hiệu và hệ thống", sl: 26, tkb: ";1-4,C214;;;;;", tuan: "13-17", lop: "24N38(DT1)"},
+    {id: 41191, khoa: 24, nhom: 38, malop: "106336026102438", ten: "Anten và truyền sóng", sl: 52, tkb: ";;;;1-3,H401;;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 41192, khoa: 24, nhom: 38, malop: "106337026102438A", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, tkb: "1-3,F106;;;;;;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 41193, khoa: 24, nhom: 38, malop: "106337026102438B", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, tkb: ";;;;;8-10,F303;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 41194, khoa: 24, nhom: 38, malop: "106365026102438", ten: "Anh văn chuyên ngành", sl: 42, tkb: ";8-10,B105;;;;;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 41195, khoa: 24, nhom: 38, malop: "209016026102438", ten: "Chủ nghĩa Xã hội khoa học", sl: 75, tkb: "4-5,F106;;;;;;", tuan: "1-16", lop: "24N38(DT1)"},
+    {id: 41196, khoa: 24, nhom: 39, malop: "106301026102439", ten: "Kỹ thuật số", sl: 53, tkb: ";;;;8-10,E2.302;;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 42347, khoa: 24, nhom: 39, malop: "106302026102439A", ten: "TN Kỹ thuật số (1TC)", sl: 27, tkb: ";;1-4,C120;;;;", tuan: "13-17", lop: "24N39(DT2)"},
+    {id: 42348, khoa: 24, nhom: 39, malop: "106302026102439B", ten: "TN Kỹ thuật số (1TC)", sl: 26, tkb: ";;;1-4,C120;;;", tuan: "13-17", lop: "24N39(DT2)"},
+    {id: 41197, khoa: 24, nhom: 39, malop: "106334026102439", ten: "Tín hiệu và hệ thống", sl: 53, tkb: "6-8,E1.102;;;;;;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 42386, khoa: 24, nhom: 39, malop: "106335026102439A", ten: "TN Tín hiệu và hệ thống", sl: 27, tkb: "1-4,C214;;;;;;", tuan: "13-17", lop: "24N39(DT2)"},
+    {id: 42387, khoa: 24, nhom: 39, malop: "106335026102439B", ten: "TN Tín hiệu và hệ thống", sl: 26, tkb: ";7-10,C214;;;;;", tuan: "7-8;10-12", lop: "24N39(DT2)"},
+    {id: 41198, khoa: 24, nhom: 39, malop: "106336026102439", ten: "Anten và truyền sóng", sl: 53, tkb: ";;;;1-3,H402;;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 41199, khoa: 24, nhom: 39, malop: "106337026102439A", ten: "PBL 2: Thiết kế mạch điện tử (Blended learning)", sl: 35, tkb: ";;;6-8,H102;;;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 41200, khoa: 24, nhom: 39, malop: "106337026102439B", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, tkb: ";;;;;3-5,P6;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 41201, khoa: 24, nhom: 39, malop: "106365026102439", ten: "Anh văn chuyên ngành", sl: 42, tkb: ";;6-8,B102;;;;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 41202, khoa: 24, nhom: 39, malop: "209016026102439", ten: "Chủ nghĩa Xã hội khoa học", sl: 75, tkb: ";;;;;1-2,P6;", tuan: "1-16", lop: "24N39(DT2)"},
+    {id: 41203, khoa: 24, nhom: 40, malop: "106301026102440", ten: "Kỹ thuật số", sl: 51, tkb: ";;;;1-3,E2.302;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 42349, khoa: 24, nhom: 40, malop: "106302026102440A", ten: "TN Kỹ thuật số (1TC)", sl: 26, tkb: "1-4,C120;;;;;;", tuan: "13-17", lop: "24N40(DT3)"},
+    {id: 42350, khoa: 24, nhom: 40, malop: "106302026102440B", ten: "TN Kỹ thuật số (1TC)", sl: 25, tkb: ";;;1-4,C120;;;", tuan: "7-8;10-12", lop: "24N40(DT3)"},
+    {id: 41204, khoa: 24, nhom: 40, malop: "106334026102440", ten: "Tín hiệu và hệ thống", sl: 51, tkb: ";;6-8,E1.104;;;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 42388, khoa: 24, nhom: 40, malop: "106335026102440A", ten: "TN Tín hiệu và hệ thống", sl: 26, tkb: ";;1-4,C214;;;;", tuan: "7-8;10-12", lop: "24N40(DT3)"},
+    {id: 42389, khoa: 24, nhom: 40, malop: "106335026102440B", ten: "TN Tín hiệu và hệ thống", sl: 25, tkb: ";;;7-10,C214;;;", tuan: "7-8;10-12", lop: "24N40(DT3)"},
+    {id: 41205, khoa: 24, nhom: 40, malop: "106336026102440", ten: "Anten và truyền sóng", sl: 51, tkb: ";6-8,E2.304;;;;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 41206, khoa: 24, nhom: 40, malop: "106337026102440", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, tkb: ";;;1-3,H205;;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 41207, khoa: 24, nhom: 40, malop: "106365026102440A", ten: "Anh văn chuyên ngành", sl: 42, tkb: "6-8,B102;;;;;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 41208, khoa: 24, nhom: 40, malop: "106365026102440B", ten: "Anh văn chuyên ngành", sl: 42, tkb: ";;;;6-8,B101;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 41209, khoa: 24, nhom: 40, malop: "209016026102440", ten: "Chủ nghĩa Xã hội khoa học", sl: 75, tkb: ";1-2,H401;;;;;", tuan: "1-16", lop: "24N40(DT3)"},
+    {id: 41210, khoa: 24, nhom: 41, malop: "106301026102441", ten: "Kỹ thuật số", sl: 51, tkb: "3-5,E2.304;;;;;;", tuan: "1-16", lop: "24N41(DT4)"},
+    {id: 42351, khoa: 24, nhom: 41, malop: "106302026102441A", ten: "TN Kỹ thuật số (1TC)", sl: 26, tkb: "7-10,C120;;;;;;", tuan: "13-17", lop: "24N41(DT4)"},
+    {id: 42352, khoa: 24, nhom: 41, malop: "106302026102441B", ten: "TN Kỹ thuật số (1TC)", sl: 25, tkb: ";;;7-10,C120;;;", tuan: "7-8;10-12", lop: "24N41(DT4)"},
+    {id: 41211, khoa: 24, nhom: 41, malop: "106334026102441", ten: "Tín hiệu và hệ thống", sl: 51, tkb: ";;;3-5,H108;;;", tuan: "1-16", lop: "24N41(DT4)"},
+    {id: 42390, khoa: 24, nhom: 41, malop: "106335026102441A", ten: "TN Tín hiệu và hệ thống", sl: 26, tkb: ";;;;1-4,C214;;", tuan: "13-17", lop: "24N41(DT4)"},
+    {id: 42391, khoa: 24, nhom: 41, malop: "106335026102441B", ten: "TN Tín hiệu và hệ thống", sl: 25, tkb: ";;;;7-10,C214;;", tuan: "13-17", lop: "24N41(DT4)"},
+    {id: 41212, khoa: 24, nhom: 41, malop: "106336026102441", ten: "Anten và truyền sóng", sl: 51, tkb: ";;6-8,E2.304;;;;", tuan: "1-16", lop: "24N41(DT4)"},
+    {id: 41213, khoa: 24, nhom: 41, malop: "106337026102441", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, tkb: ";;;;;8-10,H108;", tuan: "1-16", lop: "24N41(DT4)"},
+    {id: 41214, khoa: 24, nhom: 41, malop: "106365026102441", ten: "Anh văn chuyên ngành", sl: 42, tkb: ";6-8,B104;;;;;", tuan: "1-16", lop: "24N41(DT4)"}
+];
+
+function getCredits(name) {
+    if (name.includes("(1TC)")) return 1;
+    if (name.includes("PBL")) return 2;
+    if (name.includes("Chủ nghĩa Xã hội khoa học")) return 2;
+    if (name.includes("Anh văn chuyên ngành")) return 2;
+    return 3;
+}
+
+function parseTKB(tkbStr) {
+    const days = tkbStr.split(';');
+    const slots = [];
+    const dayNames = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+
+    days.forEach((dayContent, index) => {
+        if (dayContent && dayContent.trim() !== '' && index < 6) {
+            const parts = dayContent.split(',');
+            const timeRange = parts[0];
+            const room = parts[1] || "";
+            if (timeRange) {
+                const [start, end] = timeRange.split('-').map(Number);
+                slots.push({
+                    dayIndex: index,
+                    dayName: dayNames[index],
+                    start: start,
+                    end: end,
+                    room: room,
+                    rawText: `${dayNames[index]} (${start}-${end}) ${room}`
+                });
+            }
+        }
+    });
+    return slots;
+}
+
+function normalizeCourseName(name) {
+    return name.replace(/\(Blended learning\)/g, '').trim();
+}
+
+const courses = rawData.map(c => ({
+    ...c,
+    stc: getCredits(c.ten),
+    parsedTkb: parseTKB(c.tkb),
+    cleanName: normalizeCourseName(c.ten)
+}));
+
+let registeredIds = new Set();
+
+function isTimeConflict(c1, c2) {
+    for (let s1 of c1.parsedTkb) {
+        for (let s2 of c2.parsedTkb) {
+            if (s1.dayIndex === s2.dayIndex) {
+                if (Math.max(s1.start, s2.start) <= Math.min(s1.end, s2.end)) return true;
+            }
+        }
+    }
+    return false;
+}
+
+// KHỞI TẠO LƯỚI TKB VỚI GIỜ TIẾT
+function initTimetableGrid() {
+    const tbody = document.getElementById('timetable-body');
+    tbody.innerHTML = '';
+    for (let tiet = 1; tiet <= 10; tiet++) {
+        const tr = document.createElement('tr');
+        tr.id = `row-tiet-${tiet}`;
+        
+        let html = `<td align="center" bgcolor="#E0E0E0"><font color="#000000"><b>Tiết ${tiet}</b><br><font size="1">${timeSlots[tiet]}</font></font></td>`;
+        for (let day = 0; day < 6; day++) {
+            html += `<td id="cell-${day}-${tiet}" align="center"></td>`;
+        }
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+    }
+}
+
+
+function renderTimetableEvents() {
+    initTimetableGrid();
+
+    const registeredCourses = courses.filter(c => registeredIds.has(c.id));
+
+    registeredCourses.forEach(course => {
+        course.parsedTkb.forEach(slot => {
+            const startCell = document.getElementById(`cell-${slot.dayIndex}-${slot.start}`);
+            if (startCell) {
+                const rowspan = slot.end - slot.start + 1;
+                
+                for (let t = slot.start + 1; t <= slot.end; t++) {
+                    const toRemove = document.getElementById(`cell-${slot.dayIndex}-${t}`);
+                    if (toRemove) toRemove.remove();
+                }
+
+                startCell.rowSpan = rowspan;
+                startCell.innerHTML = `
+                    <div class="event-box">
+                        <b>${course.ten}</b><br>
+                        <font color="#000000">${course.malop}</font><br>
+                        <font color="#000000">P: ${slot.room || 'N/A'}</font>
+                    </div>
+                `;
+            }
+        });
+    });
+}
+
+
+function renderCourseList() {
+    const tbody = document.getElementById('course-list');
+    tbody.innerHTML = '';
+
+    const registeredCourses = courses.filter(c => registeredIds.has(c.id));
+
+    const totalCredits = registeredCourses.reduce((sum, c) => sum + c.stc, 0);
+    document.getElementById('total-credits').innerText = totalCredits;
+
+    courses.forEach(course => {
+        const tr = document.createElement('tr');
+        
+        const isRegistered = registeredIds.has(course.id);
+        const isSameName = registeredCourses.some(rc => rc.cleanName === course.cleanName && rc.id !== course.id);
+        const isConflict = registeredCourses.some(rc => rc.id !== course.id && isTimeConflict(rc, course));
+
+        if (isRegistered) {
+            tr.className = 'registered';
+        } else if (isSameName || isConflict) {
+            tr.className = 'disabled';
+        }
+
+        const tkbText = course.parsedTkb.map(s => s.rawText).join('<br>');
+
+        tr.innerHTML = `
+            <td align="center">
+                <input type="checkbox" 
+                    ${isRegistered ? 'checked' : ''} 
+                    onchange="toggleRegister(${course.id})">
+            </td>
+            <td><font color="#000000">${course.ten}</font></td>
+            <td><font size="2" color="#000000">${course.malop}</font></td>
+            <td align="center"><font color="#000000">${course.nhom}</font></td>
+            <td align="center"><font color="#000000">${course.stc}</font></td>
+            <td><font size="1" color="#000000">${tkbText || '-'}</font></td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+function toggleRegister(id) {
+    if (registeredIds.has(id)) {
+        registeredIds.delete(id);
+    } else {
+        registeredIds.add(id);
+    }
+    renderCourseList();
+    renderTimetableEvents();
+}
+
+renderCourseList();
+renderTimetableEvents();
+</script>
+
+</body>
+</html>
