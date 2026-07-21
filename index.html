@@ -197,12 +197,14 @@ var dataGoc = [
     { id: 41214, khoa: 24, nhom: 41, malop: "106365026102441", ten: "Anh văn chuyên ngành", sl: 42, gv: "Tăng Anh Tuấn", tkb: ";6-8,B104;;;;;", tuan: "1-16", lop: "24N41(DT4)" }
 ];
 
-// Ham tinh So tin chi theo ten mon
+// Ham tinh So tin chi theo ten mon (Da cap nhat)
 function tinhSoTinChi(tenMon) {
-    if (tenMon.indexOf("(1TC)") !== -1) return 1;
-    if (tenMon.indexOf("PBL") !== -1) return 2;
+    if (tenMon.indexOf("TN ") !== -1 || tenMon.indexOf("TN Kỹ thuật số") !== -1) return 0;
+    if (tenMon.indexOf("Tín hiệu và hệ thống") !== -1) return 4;
+    if (tenMon.indexOf("Kỹ thuật số") !== -1) return 4;
+    if (tenMon.indexOf("PBL") !== -1) return 3;
+    if (tenMon.indexOf("Anh văn chuyên ngành") !== -1) return 3;
     if (tenMon.indexOf("Chủ nghĩa Xã hội khoa học") !== -1) return 2;
-    if (tenMon.indexOf("Anh văn chuyên ngành") !== -1) return 2;
     return 3;
 }
 
