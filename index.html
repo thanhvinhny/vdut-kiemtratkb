@@ -20,6 +20,7 @@
             text-transform: uppercase;
         }
 
+        /* KHU VỰC BỘ LỌC KHÓA VÀ NHÓM HỌC */
         .khu-vuc-bo-loc {
             border: 1px solid #000000;
             background-color: #f9f9f9;
@@ -28,6 +29,7 @@
             position: relative;
         }
 
+        /* NÚT THU GỌN / MỞ RỘNG BỘ LỌC */
         .btn-toggle-bo-loc {
             position: absolute;
             top: 6px;
@@ -76,12 +78,6 @@
             gap: 3px;
             cursor: pointer;
             user-select: none;
-        }
-
-        .thong-tin-tc {
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 6px;
         }
 
         .cot-trai {
@@ -140,6 +136,7 @@
             vertical-align: top;
         }
 
+        /* THẺ MÔN HỌC TRÊN TKB */
         .the-mon-hoc {
             width: 100%;
             height: 100%;
@@ -159,6 +156,7 @@
             clear: both;
         }
 
+        /* NÚT ĐĂNG KÝ GÓC DƯỚI BÊN PHẢI */
         .btn-dang-ky {
             position: fixed;
             bottom: 20px;
@@ -406,21 +404,17 @@
         <!-- NỘI DUNG BỘ LỌC -->
         <div id="noiDungBoLoc">
             <div class="dong-loc">
-                <label class="tieu-de-loc">Chọn khóa học:</label>
+                <label class="tieu-de-loc">Chọn Khóa học:</label>
                 <select id="select-khoa" onchange="thayDoiKhoaHoc()" style="padding: 4px 8px; font-weight: bold;">
-                    <option value="">KHÓA HỌC</option>
+                    <option value="">-- Chọn khóa học --</option>
                 </select>
             </div>
 
             <div class="dong-loc" id="khu-vuc-nhom" style="display: none;">
-                <label class="tieu-de-loc">Chọn nhóm HP:</label>
+                <label class="tieu-de-loc">Chọn Nhóm:</label>
                 <div class="danh-sach-checkbox-nhom" id="container-checkbox-nhom"></div>
             </div>
         </div>
-    </div>
-
-    <div class="thong-tin-tc">
-        SỐ TC: <span id="tong-tc">0</span>
     </div>
 
     <div class="cot-trai">
@@ -491,7 +485,7 @@
                 
                 <div class="tab-buttons">
                     <button class="tab-btn active" id="btnTabQr" onclick="switchTab('qr')">VietQR</button>
-                    <button class="tab-btn" id="btnTabCard" onclick="switchTab('card')">Card</button>
+                    <button class="tab-btn" id="btnTabCard" onclick="switchTab('card')">Thẻ Ngân Hàng (CARD)</button>
                 </div>
                 
                 <div class="tab-content active" id="contentQr">
@@ -562,16 +556,6 @@ function toggleKhungBoLoc() {
     }
 }
 
-function tinhSoTinChi(tenMon) {
-    if (tenMon.indexOf("TN ") !== -1 || tenMon.indexOf("TN Kỹ thuật số") !== -1) return 0;
-    if (tenMon.indexOf("Tín hiệu và hệ thống") !== -1) return 4;
-    if (tenMon.indexOf("Kỹ thuật số") !== -1) return 4;
-    if (tenMon.indexOf("PBL") !== -1) return 3;
-    if (tenMon.indexOf("Anh văn chuyên ngành") !== -1) return 3;
-    if (tenMon.indexOf("Chủ nghĩa Xã hội khoa học") !== -1) return 2;
-    return 3;
-}
-
 function layTenNhomCon(mon) {
     var kyTuCuoi = mon.malop.slice(-1);
     if (kyTuCuoi === 'A' || kyTuCuoi === 'B') return 'NHÓM ' + mon.nhom + kyTuCuoi;
@@ -639,7 +623,6 @@ function khoiTaoBoLoc() {
             tkbGoc: item.tkb,
             tuan: item.tuan,
             lop: item.lop,
-            stc: tinhSoTinChi(item.ten),
             chiTietTkb: docChuoiTKB(item.tkb),
             tenChuan: rutGonTenMon(item.ten)
         });
@@ -652,7 +635,7 @@ function khoiTaoBoLoc() {
     dsKhoa.sort(function(a, b){ return a - b; });
 
     var selectKhoa = document.getElementById("select-khoa");
-    selectKhoa.innerHTML = '<option value="">KHÓA HỌC</option>';
+    selectKhoa.innerHTML = '<option value="">-- Chọn khóa học --</option>';
     for (var k = 0; k < dsKhoa.length; k++) {
         selectKhoa.innerHTML += '<option value="' + dsKhoa[k] + '">Khóa ' + dsKhoa[k] + '</option>';
     }
@@ -783,15 +766,12 @@ function renderDanhSachMon() {
         }
     }
 
-    var tongTC = 0;
     var listMonSelectedObj = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
             listMonSelectedObj.push(danhSachMonHoc[i]);
-            tongTC += danhSachMonHoc[i].stc;
         }
     }
-    document.getElementById('tong-tc').innerText = tongTC;
 
     var currentNhom = null;
 
