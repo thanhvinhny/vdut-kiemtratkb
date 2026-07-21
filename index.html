@@ -407,12 +407,11 @@
             <thead>
                 <tr bgcolor="#E0E0E0">
                     <th width="5%">Chọn</th>
-                    <th width="27%">Tên Môn Học</th>
-                    <th width="20%">Mã Lớp HP</th>
+                    <th width="28%">Tên Môn Học</th>
+                    <th width="22%">Mã Lớp HP</th>
                     <th width="6%">Nhóm</th>
-                    <th width="18%">Giảng Viên</th>
-                    <th width="5%">STC</th>
-                    <th width="19%">TKB</th>
+                    <th width="19%">Giảng Viên</th>
+                    <th width="20%">TKB</th>
                 </tr>
             </thead>
             <tbody id="body-danh-sach"></tbody>
@@ -586,10 +585,6 @@ function khoiTaoBoLoc() {
         var khoaThat = parseInt(item.khoa);
         var nhomThat = parseInt(item.nhom);
 
-        // LOGIC TRA CỨU TÊN GIẢNG VIÊN THEO THỨ TỰ ƯU TIÊN:
-        // 1. Kiểm tra Mã GV trong file magv.js
-        // 2. Nếu không có -> Kiểm tra Mã Lớp HP trong file giangvien.js
-        // 3. Nếu cả 2 đều không có -> Giữ nguyên item.gv cũ
         var tenGV = item.gv;
         
         if (typeof mapMaGV !== 'undefined' && mapMaGV[item.gv]) {
@@ -772,7 +767,7 @@ function renderDanhSachMon() {
             currentNhom = mon.nhom;
             var trNhom = document.createElement('tr');
             trNhom.className = 'header-nhom';
-            trNhom.innerHTML = '<td colspan="7" align="center">NHÓM ' + currentNhom + '</td>';
+            trNhom.innerHTML = '<td colspan="6" align="center">NHÓM ' + currentNhom + '</td>';
             bodyDanhSach.appendChild(trNhom);
         }
 
@@ -803,12 +798,12 @@ function renderDanhSachMon() {
         }
 
         var isChecked = isDaChon ? 'checked' : '';
+        // Đã bỏ cột STC
         tr.innerHTML = '<td align="center"><input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')"></td>' +
             '<td><font color="#000000">' + mon.ten + '</font></td>' +
             '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
             '<td align="center"><font color="#000000"><b>' + mon.nhom + '</b></font></td>' +
             '<td><font color="#000000">' + mon.gv + '</font></td>' +
-            '<td align="center"><font color="#000000">' + mon.stc + '</font></td>' +
             '<td><font size="1" color="#000000">' + (textTkb || '-') + '</font></td>';
 
         bodyDanhSach.appendChild(tr);
