@@ -652,7 +652,7 @@ function khoiTaoBoLoc() {
     dsKhoa.sort(function(a, b){ return a - b; });
 
     var selectKhoa = document.getElementById("select-khoa");
-    selectKhoa.innerHTML = '<option value="">-- Chọn khóa học --</option>';
+    selectKhoa.innerHTML = '<option value="">KHÓA HỌC</option>';
     for (var k = 0; k < dsKhoa.length; k++) {
         selectKhoa.innerHTML += '<option value="' + dsKhoa[k] + '">Khóa ' + dsKhoa[k] + '</option>';
     }
