@@ -526,19 +526,25 @@ function getMauNhomTkb(nhomNum) {
     return mauTkbPastel[index];
 }
 
-// HÀM SOI TỰ ĐỘNG KHÓA HỌC THẬT (BÓC TỪ CHUỖI TÊN LỚP NẾU CỘT KHOA BỊ SAI)
+// HÀM TRÍCH XUẤT KHÓA HỌC CHUẨN XÁC (CHỈ LẤY CÁC KHÓA TỪ 18 ĐẾN 30)
 function trichXuatKhoaHoc(item) {
-    // Ưu tiên soi chuỗi lớp (VD: "24N38", "25N12", "26N01" -> Bóc số 24, 25, 26)
+    // 1. Kiểm tra trực tiếp item.khoa nếu nằm trong khoảng hợp lệ (Ví dụ: 20 đến 26)
+    var kDirect = parseInt(item.khoa);
+    if (kDirect >= 18 && kDirect <= 30) return kDirect;
+
+    // 2. Tìm trong tên Lớp (VD: "24N38", "25N12", "26N01" -> bắt được 24, 25, 26)
     if (item.lop) {
-        var match = item.lop.match(/^(\d+)/);
-        if (match) return parseInt(match[1]);
+        var matchLop = item.lop.match(/(1[8-9]|2[0-9]|3[0-0])N/i) || item.lop.match(/(1[8-9]|2[0-9]|3[0-0])/);
+        if (matchLop) return parseInt(matchLop[1]);
     }
-    // Soi chuỗi mã lớp học phần nếu có dạng ...102438, ...102512
+
+    // 3. Tìm trong Mã lớp HP (VD: 106301026102438 -> Bắt số 24 trước 2 số nhóm cuối)
     if (item.malop) {
-        var matchMa = item.malop.match(/10(\d{2})\d{2}/);
+        var matchMa = item.malop.match(/(1[8-9]|2[0-9]|3[0-0])\d{2}[A-Z]?$/);
         if (matchMa) return parseInt(matchMa[1]);
     }
-    return parseInt(item.khoa) || 24;
+
+    return null; // Loại bỏ các số rác như 1, 0
 }
 
 function tinhSoTinChi(tenMon) {
@@ -596,7 +602,6 @@ function khoiTaoBoLoc() {
     for (var i = 0; i < dataGoc.length; i++) {
         var item = dataGoc[i];
         
-        // Tự động nhận diện khóa học thực sự
         var khoaThat = trichXuatKhoaHoc(item);
 
         danhSachMonHoc.push({
@@ -615,12 +620,13 @@ function khoiTaoBoLoc() {
             tenChuan: rutGonTenMon(item.ten)
         });
 
-        if (dsKhoa.indexOf(khoaThat) === -1 && khoaThat) {
+        // Chỉ thêm khóa hợp lệ (loại bỏ null/rác)
+        if (khoaThat && dsKhoa.indexOf(khoaThat) === -1) {
             dsKhoa.push(khoaThat);
         }
     }
 
-    // Sắp xếp khóa học tăng dần (24, 25, 26...)
+    // Sắp xếp khóa tăng dần (24, 25, 26...)
     dsKhoa.sort(function(a, b){ return a - b; });
 
     var selectKhoa = document.getElementById("select-khoa");
