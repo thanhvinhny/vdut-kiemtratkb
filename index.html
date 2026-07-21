@@ -20,6 +20,47 @@
             text-transform: uppercase;
         }
 
+        /* KHU VỰC BỘ LỌC KHÓA VÀ NHÓM HỌC */
+        .khu-vuc-bo-loc {
+            border: 1px solid #000000;
+            background-color: #f9f9f9;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+        }
+
+        .dong-loc {
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .dong-loc label.tieu-de-loc {
+            font-weight: bold;
+            min-width: 100px;
+        }
+
+        .danh-sach-checkbox-nhom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 15px;
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            background: #fff;
+            flex: 1;
+        }
+
+        .item-nhom-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            user-select: none;
+        }
+
         .thong-tin-tc {
             text-align: center;
             font-weight: bold;
@@ -178,7 +219,6 @@
             color: #000000; 
         }
 
-        /* VÙNG LIÊN HỆ FACEBOOK */
         .contact-box {
             margin: 25px 0;
             padding: 15px;
@@ -354,6 +394,25 @@
 
     <h2>VDUT - TKB</h2>
 
+    <!-- KHU VỰC BỘ LỌC KHÓA HỌC & NHÓM HỌC -->
+    <div class="khu-vuc-bo-loc">
+        <div class="dong-loc">
+            <label class="tieu-de-loc">Chọn Khóa học:</label>
+            <select id="select-khoa" onchange="thayDoiKhoaHoc()" style="padding: 4px 8px; font-weight: bold;">
+                <option value="">-- Chọn khóa học --</option>
+            </select>
+        </div>
+
+        <div class="dong-loc" id="khu-vuc-nhom" style="display: none;">
+            <label class="tieu-de-loc">Chọn Nhóm:</label>
+            <div style="margin-bottom: 4px;">
+                <button onclick="chonTatCaNhom(true)">Chọn tất cả</button>
+                <button onclick="chonTatCaNhom(false)">Bỏ chọn tất cả</button>
+            </div>
+            <div class="danh-sach-checkbox-nhom" id="container-checkbox-nhom"></div>
+        </div>
+    </div>
+
     <div class="thong-tin-tc">
         SỐ TC: <span id="tong-tc">0</span>
     </div>
@@ -394,18 +453,20 @@
 
     <div class="xoa-float"></div>
 
+    <!-- NÚT ĐĂNG KÝ -->
     <button class="btn-dang-ky" onclick="openFeaturesModal()">ĐĂNG KÝ</button>
 
+    <!-- MODAL ĐĂNG KÝ PREMIUM -->
     <div class="modal-payment" id="paymentModal">
         <div class="modal-content">
             <span class="close-modal-btn" onclick="closePaymentModal()">&times;</span>
             
             <div id="viewFeatures">
-                <div class="modal-title">VDUT PREMIUM</div>
+                <div class="modal-title">GÓI VDUT PREMIUM</div>
                 <div class="modal-price" style="margin-top: 5px;">100.000 đ</div>
                 
                 <div class="contact-box">
-                    <p>Để biết thêm thông tin chi tiết các chức năng:</p>
+                    <p>Liên hệ để biết thêm thông tin chi tiết các chức năng:</p>
                     <a href="https://j2c.cc/admin" target="_blank" class="fb-link">
                         <svg class="fb-icon" viewBox="0 0 24 24" fill="#1877f2">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -414,7 +475,7 @@
                     </a>
                 </div>
 
-                <button class="btn-submit-pay" onclick="goToPaymentMethods()">ĐĂNG KÝ</button>
+                <button class="btn-submit-pay" onclick="goToPaymentMethods()">Đăng Ký Gói</button>
             </div>
 
             <div id="viewPayment" style="display: none;">
@@ -425,7 +486,7 @@
                 
                 <div class="tab-buttons">
                     <button class="tab-btn active" id="btnTabQr" onclick="switchTab('qr')">VietQR</button>
-                    <button class="tab-btn" id="btnTabCard" onclick="switchTab('card')">CARD</button>
+                    <button class="tab-btn" id="btnTabCard" onclick="switchTab('card')">Thẻ Ngân Hàng (CARD)</button>
                 </div>
                 
                 <div class="tab-content active" id="contentQr">
@@ -454,65 +515,18 @@
         </div>
     </div>
 
+    <!-- TẢI FILE DATA TỪ BÊN NGOÀI -->
+    <script src="data.js"></script>
+
 <script>
-// Gio hoc cac tiet
 var gioHoc = {
-    1: "7h00 - 7h50",
-    2: "8h00 - 8h50",
-    3: "9h00 - 9h50",
-    4: "10h00 - 10h50",
-    5: "11h00 - 11h50",
-    6: "12h30 - 13h20",
-    7: "13h30 - 14h20",
-    8: "14h30 - 15h20",
-    9: "15h30 - 16h20",
-    10: "16h30 - 17h20"
+    1: "7h00 - 7h50", 2: "8h00 - 8h50", 3: "9h00 - 9h50", 4: "10h00 - 10h50", 5: "11h00 - 11h50",
+    6: "12h30 - 13h20", 7: "13h30 - 14h20", 8: "14h30 - 15h20", 9: "15h30 - 16h20", 10: "16h30 - 17h20"
 };
 
-var dataGoc = [
-    { id: 41189, khoa: 24, nhom: 38, malop: "106301026102438", ten: "Kỹ thuật số", sl: 52, gv: "Huỳnh Việt Thắng", tkb: ";;;1-3,H207;;;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 42345, khoa: 24, nhom: 38, malop: "106302026102438A", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: ";;7-10,C120;;;;", tuan: "13-17", lop: "24N38(DT1)" },
-    { id: 42346, khoa: 24, nhom: 38, malop: "106302026102438B", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: ";;;7-10,C120;;;", tuan: "13-17", lop: "24N38(DT1)" },
-    { id: 41190, khoa: 24, nhom: 38, malop: "106334026102438", ten: "Tín hiệu và hệ thống", sl: 52, gv: "Bùi Thị Minh Tú", tkb: ";;3-5,F207;;;;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 42384, khoa: 24, nhom: 38, malop: "106335026102438A", ten: "TN Tín hiệu và hệ thống", sl: 26, gv: "Trần Văn Líc", tkb: "7-10,C214;;;;;;", tuan: "13-17", lop: "24N38(DT1)" },
-    { id: 42385, khoa: 24, nhom: 38, malop: "106335026102438B", ten: "TN Tín hiệu và hệ thống", sl: 26, gv: "Trần Văn Líc", tkb: ";1-4,C214;;;;;", tuan: "13-17", lop: "24N38(DT1)" },
-    { id: 41191, khoa: 24, nhom: 38, malop: "106336026102438", ten: "Anten và truyền sóng", sl: 52, gv: "Nguyễn Văn Cường", tkb: ";;;;1-3,H401;;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 41192, khoa: 24, nhom: 38, malop: "106337026102438A", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, gv: "Huỳnh Thanh Tùng", tkb: "1-3,F106;;;;;;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 41193, khoa: 24, nhom: 38, malop: "106337026102438B", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, gv: "Nguyễn Duy Nhật Viễn", tkb: ";;;;;8-10,F303;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 41194, khoa: 24, nhom: 38, malop: "106365026102438", ten: "Anh văn chuyên ngành", sl: 42, gv: "Lê Thị Phương Mai", tkb: ";8-10,B105;;;;;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 41195, khoa: 24, nhom: 38, malop: "209016026102438", ten: "Chủ nghĩa Xã hội khoa học", sl: 75, gv: "Nguyễn Thị Thu Huyền", tkb: "4-5,F106;;;;;;", tuan: "1-16", lop: "24N38(DT1)" },
-    { id: 41196, khoa: 24, nhom: 39, malop: "106301026102439", ten: "Kỹ thuật số", sl: 53, gv: "Huỳnh Việt Thắng", tkb: ";;;;8-10,E2.302;;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 42347, khoa: 24, nhom: 39, malop: "106302026102439A", ten: "TN Kỹ thuật số (1TC)", sl: 27, gv: "Vũ Vân Thanh", tkb: ";;1-4,C120;;;;", tuan: "13-17", lop: "24N39(DT2)" },
-    { id: 42348, khoa: 24, nhom: 39, malop: "106302026102439B", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: ";;;1-4,C120;;;", tuan: "13-17", lop: "24N39(DT2)" },
-    { id: 41197, khoa: 24, nhom: 39, malop: "106334026102439", ten: "Tín hiệu và hệ thống", sl: 53, gv: "Bùi Thị Minh Tú", tkb: "6-8,E1.102;;;;;;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 42386, khoa: 24, nhom: 39, malop: "106335026102439A", ten: "TN Tín hiệu và hệ thống", sl: 27, gv: "Trần Văn Líc", tkb: "1-4,C214;;;;;;", tuan: "13-17", lop: "24N39(DT2)" },
-    { id: 42387, khoa: 24, nhom: 39, malop: "106335026102439B", ten: "TN Tín hiệu và hệ thống", sl: 26, gv: "Trần Văn Líc", tkb: ";7-10,C214;;;;;", tuan: "7-8;10-12", lop: "24N39(DT2)" },
-    { id: 41198, khoa: 24, nhom: 39, malop: "106336026102439", ten: "Anten và truyền sóng", sl: 53, gv: "Võ Duy Phúc", tkb: ";;;;1-3,H402;;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 41199, khoa: 24, nhom: 39, malop: "106337026102439A", ten: "PBL 2: Thiết kế mạch điện tử (Blended learning)", sl: 35, gv: "Phan Trần Đăng Khoa", tkb: ";;;6-8,H102;;;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 41200, khoa: 24, nhom: 39, malop: "106337026102439B", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, gv: "Tăng Anh Tuấn", tkb: ";;;;;3-5,P6;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 41201, khoa: 24, nhom: 39, malop: "106365026102439", ten: "Anh văn chuyên ngành", sl: 42, gv: "Lê Thị Phương Mai", tkb: ";;6-8,B102;;;;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 41202, khoa: 24, nhom: 39, malop: "209016026102439", ten: "Chủ nghĩa Xã hội khoa học", sl: 75, gv: "Hoàng Thị Kim Liên", tkb: ";;;;;1-2,P6;", tuan: "1-16", lop: "24N39(DT2)" },
-    { id: 41203, khoa: 24, nhom: 40, malop: "106301026102440", ten: "Kỹ thuật số", sl: 51, gv: "Huỳnh Việt Thắng", tkb: ";;;;1-3,E2.302;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 42349, khoa: 24, nhom: 40, malop: "106302026102440A", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: "1-4,C120;;;;;;", tuan: "13-17", lop: "24N40(DT3)" },
-    { id: 42350, khoa: 24, nhom: 40, malop: "106302026102440B", ten: "TN Kỹ thuật số (1TC)", sl: 25, gv: "Vũ Vân Thanh", tkb: ";;;1-4,C120;;;", tuan: "7-8;10-12", lop: "24N40(DT3)" },
-    { id: 41204, khoa: 24, nhom: 40, malop: "106334026102440", ten: "Tín hiệu và hệ thống", sl: 51, gv: "Bùi Thị Minh Tú", tkb: ";;6-8,E1.104;;;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 42388, khoa: 24, nhom: 40, malop: "106335026102440A", ten: "TN Tín hiệu và hệ thống", sl: 26, gv: "Trần Văn Líc", tkb: ";;1-4,C214;;;;", tuan: "7-8;10-12", lop: "24N40(DT3)" },
-    { id: 42389, khoa: 24, nhom: 40, malop: "106335026102440B", ten: "TN Tín hiệu và hệ thống", sl: 25, gv: "Trần Văn Líc", tkb: ";;;7-10,C214;;;", tuan: "7-8;10-12", lop: "24N40(DT3)" },
-    { id: 41205, khoa: 24, nhom: 40, malop: "106336026102440", ten: "Anten và truyền sóng", sl: 51, gv: "Võ Duy Phúc", tkb: ";6-8,E2.304;;;;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 41206, khoa: 24, nhom: 40, malop: "106337026102440", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, gv: "Huỳnh Thanh Tùng", tkb: ";;;1-3,H205;;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 41207, khoa: 24, nhom: 40, malop: "106365026102440A", ten: "Anh văn chuyên ngành", sl: 42, gv: "Trần Thị Minh Hạnh", tkb: "6-8,B102;;;;;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 41208, khoa: 24, nhom: 40, malop: "106365026102440B", ten: "Anh văn chuyên ngành", sl: 42, gv: "Tăng Anh Tuấn", tkb: ";;;;6-8,B101;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 41209, khoa: 24, nhom: 40, malop: "209016026102440", ten: "Chủ nghĩa Xã hội khoa học", sl: 75, gv: "Trương Thị Thu Huyền", tkb: ";1-2,H401;;;;;", tuan: "1-16", lop: "24N40(DT3)" },
-    { id: 41210, khoa: 24, nhom: 41, malop: "106301026102441", ten: "Kỹ thuật số", sl: 51, gv: "Nguyễn Văn Phòng", tkb: "3-5,E2.304;;;;;;", tuan: "1-16", lop: "24N41(DT4)" },
-    { id: 42351, khoa: 24, nhom: 41, malop: "106302026102441A", ten: "TN Kỹ thuật số (1TC)", sl: 26, gv: "Vũ Vân Thanh", tkb: "7-10,C120;;;;;;", tuan: "13-17", lop: "24N41(DT4)" },
-    { id: 42352, khoa: 24, nhom: 41, malop: "106302026102441B", ten: "TN Kỹ thuật số (1TC)", sl: 25, gv: "Vũ Vân Thanh", tkb: ";;;7-10,C120;;;", tuan: "7-8;10-12", lop: "24N41(DT4)" },
-    { id: 41211, khoa: 24, nhom: 41, malop: "106334026102441", ten: "Tín hiệu và hệ thống", sl: 51, gv: "Bùi Thị Minh Tú", tkb: ";;;3-5,H108;;;", tuan: "1-16", lop: "24N41(DT4)" },
-    { id: 42390, khoa: 24, nhom: 41, malop: "106335026102441A", ten: "TN Tín hiệu và hệ thống", sl: 26, gv: "Trần Văn Líc", tkb: ";;;;1-4,C214;;", tuan: "13-17", lop: "24N41(DT4)" },
-    { id: 42391, khoa: 24, nhom: 41, malop: "106335026102441B", ten: "TN Tín hiệu và hệ thống", sl: 25, gv: "Trần Văn Líc", tkb: ";;;;7-10,C214;;", tuan: "13-17", lop: "24N41(DT4)" },
-    { id: 41212, khoa: 24, nhom: 41, malop: "106336026102441", ten: "Anten và truyền sóng", sl: 51, gv: "Võ Duy Phúc", tkb: ";;6-8,E2.304;;;;", tuan: "1-16", lop: "24N41(DT4)" },
-    { id: 41213, khoa: 24, nhom: 41, malop: "106337026102441", ten: "PBL 2: Thiết kế mạch điện tử", sl: 35, gv: "Tăng Anh Tuấn", tkb: ";;;;;8-10,H108;", tuan: "1-16", lop: "24N41(DT4)" },
-    { id: 41214, khoa: 24, nhom: 41, malop: "106365026102441", ten: "Anh văn chuyên ngành", sl: 42, gv: "Tăng Anh Tuấn", tkb: ";6-8,B104;;;;;", tuan: "1-16", lop: "24N41(DT4)" }
-];
+var danhSachMonHoc = [];
+var listIdDaChon = [];
+var listNhomDuocChon = [];
 
 function tinhSoTinChi(tenMon) {
     if (tenMon.indexOf("TN ") !== -1 || tenMon.indexOf("TN Kỹ thuật số") !== -1) return 0;
@@ -526,9 +540,7 @@ function tinhSoTinChi(tenMon) {
 
 function layTenNhomCon(mon) {
     var kyTuCuoi = mon.malop.slice(-1);
-    if (kyTuCuoi === 'A' || kyTuCuoi === 'B') {
-        return 'NHÓM ' + mon.nhom + kyTuCuoi;
-    }
+    if (kyTuCuoi === 'A' || kyTuCuoi === 'B') return 'NHÓM ' + mon.nhom + kyTuCuoi;
     return 'NHÓM ' + mon.nhom;
 }
 
@@ -545,15 +557,12 @@ function docChuoiTKB(chuoiTkb) {
             var phong = cat[1] || "";
             if (tiet) {
                 var gio = tiet.split('-');
-                var tietBatDau = parseInt(gio[0]);
-                var tietKetThuc = parseInt(gio[1]);
-
                 danhSachTkb.push({
                     thuIndex: i,
-                    tietBD: tietBatDau,
-                    tietKT: tietKetThuc,
+                    tietBD: parseInt(gio[0]),
+                    tietKT: parseInt(gio[1]),
                     phongHoc: phong,
-                    textHienThi: tenThu[i] + " (" + tietBatDau + "-" + tietKetThuc + ") " + phong
+                    textHienThi: tenThu[i] + " (" + gio[0] + "-" + gio[1] + ") " + phong
                 });
             }
         }
@@ -565,40 +574,112 @@ function rutGonTenMon(tenMon) {
     return tenMon.replace("(Blended learning)", "").trim();
 }
 
-var danhSachMonHoc = [];
-for (var i = 0; i < dataGoc.length; i++) {
-    var item = dataGoc[i];
-    danhSachMonHoc.push({
-        id: item.id,
-        khoa: item.khoa,
-        nhom: item.nhom,
-        malop: item.malop,
-        ten: item.ten,
-        sl: item.sl,
-        gv: item.gv,
-        tkbGoc: item.tkb,
-        tuan: item.tuan,
-        lop: item.lop,
-        stc: tinhSoTinChi(item.ten),
-        chiTietTkb: docChuoiTKB(item.tkb),
-        tenChuan: rutGonTenMon(item.ten)
-    });
+// KHỞI TẠO BỘ LỌC ĐỘNG (KHÓA HỌC & NHÓM)
+function khoiTaoBoLoc() {
+    if (typeof dataGoc === 'undefined') return;
+
+    // Chuẩn hóa dữ liệu ban đầu
+    danhSachMonHoc = [];
+    var dsKhoa = [];
+
+    for (var i = 0; i < dataGoc.length; i++) {
+        var item = dataGoc[i];
+        danhSachMonHoc.push({
+            id: item.id,
+            khoa: item.khoa,
+            nhom: item.nhom,
+            malop: item.malop,
+            ten: item.ten,
+            sl: item.sl,
+            gv: item.gv,
+            tkbGoc: item.tkb,
+            tuan: item.tuan,
+            lop: item.lop,
+            stc: tinhSoTinChi(item.ten),
+            chiTietTkb: docChuoiTKB(item.tkb),
+            tenChuan: rutGonTenMon(item.ten)
+        });
+
+        if (dsKhoa.indexOf(item.khoa) === -1) {
+            dsKhoa.push(item.khoa);
+        }
+    }
+
+    // Đổ danh sách Khóa vào Dropdown
+    dsKhoa.sort(function(a, b){ return a - b; });
+    var selectKhoa = document.getElementById("select-khoa");
+    selectKhoa.innerHTML = '<option value="">-- Chọn khóa học --</option>';
+    for (var k = 0; k < dsKhoa.length; k++) {
+        selectKhoa.innerHTML += '<option value="' + dsKhoa[k] + '">Khóa ' + dsKhoa[k] + '</option>';
+    }
 }
 
-var listIdDaChon = [];
+// KHI CHỌN KHÓA HỌC -> TỰ ĐỘNG TẠO CHECKBOX NHÓM
+function thayDoiKhoaHoc() {
+    var khoaDaChon = document.getElementById("select-khoa").value;
+    var khuVucNhom = document.getElementById("khu-vuc-nhom");
+    var containerNhom = document.getElementById("container-checkbox-nhom");
+
+    if (!khoaDaChon) {
+        khuVucNhom.style.display = "none";
+        listNhomDuocChon = [];
+        renderDanhSachMon();
+        return;
+    }
+
+    // Lọc danh sách Nhóm thuộc Khóa đã chọn
+    var dsNhom = [];
+    for (var i = 0; i < danhSachMonHoc.length; i++) {
+        if (danhSachMonHoc[i].khoa == khoaDaChon) {
+            if (dsNhom.indexOf(danhSachMonHoc[i].nhom) === -1) {
+                dsNhom.push(danhSachMonHoc[i].nhom);
+            }
+        }
+    }
+
+    dsNhom.sort(function(a, b){ return a - b; });
+
+    // Tạo các ô checkbox nhóm
+    var htmlCheckbox = '';
+    listNhomDuocChon = []; // Reset nhóm
+    for (var n = 0; n < dsNhom.length; n++) {
+        var nhomNum = dsNhom[n];
+        htmlCheckbox += '<label class="item-nhom-checkbox">' +
+            '<input type="checkbox" value="' + nhomNum + '" onchange="capNhatNhomDuocChon()"> Nhóm ' + nhomNum +
+            '</label>';
+    }
+
+    containerNhom.innerHTML = htmlCheckbox;
+    khuVucNhom.style.display = "flex";
+    renderDanhSachMon();
+}
+
+function chonTatCaNhom(status) {
+    var checkboxes = document.querySelectorAll("#container-checkbox-nhom input[type='checkbox']");
+    for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = status;
+    }
+    capNhatNhomDuocChon();
+}
+
+function capNhatNhomDuocChon() {
+    listNhomDuocChon = [];
+    var checkboxes = document.querySelectorAll("#container-checkbox-nhom input[type='checkbox']:checked");
+    for (var i = 0; i < checkboxes.length; i++) {
+        listNhomDuocChon.push(parseInt(checkboxes[i].value));
+    }
+    renderDanhSachMon();
+}
 
 function kiemTraTrungLich(mon1, mon2) {
     for (var a = 0; a < mon1.chiTietTkb.length; a++) {
         for (var b = 0; b < mon2.chiTietTkb.length; b++) {
             var slot1 = mon1.chiTietTkb[a];
             var slot2 = mon2.chiTietTkb[b];
-
             if (slot1.thuIndex === slot2.thuIndex) {
                 var maxStart = Math.max(slot1.tietBD, slot2.tietBD);
                 var minEnd = Math.min(slot1.tietKT, slot2.tietKT);
-                if (maxStart <= minEnd) {
-                    return true;
-                }
+                if (maxStart <= minEnd) return true;
             }
         }
     }
@@ -608,11 +689,8 @@ function kiemTraTrungLich(mon1, mon2) {
 function taoKhungTKB() {
     var bodyTkb = document.getElementById('body-tkb');
     bodyTkb.innerHTML = '';
-
     for (var tiet = 1; tiet <= 10; tiet++) {
         var tr = document.createElement('tr');
-        tr.id = 'dong-tiet-' + tiet;
-
         var htmlDong = '<td align="center" bgcolor="#E0E0E0"><font color="#000000"><b>Tiết ' + tiet + '</b><br><font size="1">' + gioHoc[tiet] + '</font></font></td>';
         for (var thu = 0; thu < 6; thu++) {
             htmlDong += '<td id="o-' + thu + '-' + tiet + '" align="center"></td>';
@@ -624,7 +702,6 @@ function taoKhungTKB() {
 
 function renderTKB() {
     taoKhungTKB();
-
     var listMonDaChon = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
@@ -637,27 +714,18 @@ function renderTKB() {
         for (var j = 0; j < mon.chiTietTkb.length; j++) {
             var slot = mon.chiTietTkb[j];
             var oBatDau = document.getElementById('o-' + slot.thuIndex + '-' + slot.tietBD);
-
             if (oBatDau) {
                 var soTietHop = slot.tietKT - slot.tietBD + 1;
-
                 for (var t = slot.tietBD + 1; t <= slot.tietKT; t++) {
                     var oCuaXoa = document.getElementById('o-' + slot.thuIndex + '-' + t);
-                    if (oCuaXoa) {
-                        oCuaXoa.parentNode.removeChild(oCuaXoa);
-                    }
+                    if (oCuaXoa) oCuaXoa.parentNode.removeChild(oCuaXoa);
                 }
-
                 oBatDau.rowSpan = soTietHop;
-                
-                var tenNhomHienThi = layTenNhomCon(mon);
-                var phongHienThi = slot.phongHoc || 'N/A';
-
                 oBatDau.innerHTML = '<div class="the-mon-hoc nhom-' + mon.nhom + '">' +
                     '<b>' + mon.ten + '</b><br>' +
-                    '<span>' + tenNhomHienThi + '</span><br>' +
+                    '<span>' + layTenNhomCon(mon) + '</span><br>' +
                     '<span>GV: ' + mon.gv + '</span><br>' +
-                    '<span>' + phongHienThi + '</span>' +
+                    '<span>' + (slot.phongHoc || 'N/A') + '</span>' +
                     '</div>';
             }
         }
@@ -668,11 +736,25 @@ function renderDanhSachMon() {
     var bodyDanhSach = document.getElementById('body-danh-sach');
     bodyDanhSach.innerHTML = '';
 
+    var khoaDaChon = document.getElementById("select-khoa").value;
+
+    // LỌC MÔN HỌC THEO KHÓA VÀ NHÓM NGHĨA LÀ CHỈ HIỆN MÔN MÀ USER TICK
+    var danhSachHienThi = [];
+    if (khoaDaChon && listNhomDuocChon.length > 0) {
+        for (var i = 0; i < danhSachMonHoc.length; i++) {
+            var mon = danhSachMonHoc[i];
+            if (mon.khoa == khoaDaChon && listNhomDuocChon.indexOf(mon.nhom) !== -1) {
+                danhSachHienThi.push(mon);
+            }
+        }
+    }
+
+    // TÍNH SỐ TÍN CHỈ CÁC MÔN ĐÃ TICK CHỌN TRONG TKB
     var tongTC = 0;
-    var listMonDaChon = [];
+    var listMonSelectedObj = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
-            listMonDaChon.push(danhSachMonHoc[i]);
+            listMonSelectedObj.push(danhSachMonHoc[i]);
             tongTC += danhSachMonHoc[i].stc;
         }
     }
@@ -680,8 +762,8 @@ function renderDanhSachMon() {
 
     var currentNhom = null;
 
-    for (var i = 0; i < danhSachMonHoc.length; i++) {
-        var mon = danhSachMonHoc[i];
+    for (var i = 0; i < danhSachHienThi.length; i++) {
+        var mon = danhSachHienThi[i];
 
         if (mon.nhom !== currentNhom) {
             currentNhom = mon.nhom;
@@ -692,30 +774,21 @@ function renderDanhSachMon() {
         }
 
         var tr = document.createElement('tr');
-
         var isDaChon = listIdDaChon.indexOf(mon.id) !== -1;
         var isTrungTen = false;
         var isTrungGio = false;
 
-        for (var k = 0; k < listMonDaChon.length; k++) {
-            var monSelected = listMonDaChon[k];
+        for (var k = 0; k < listMonSelectedObj.length; k++) {
+            var monSelected = listMonSelectedObj[k];
             if (monSelected.id !== mon.id) {
-                if (monSelected.tenChuan === mon.tenChuan) {
-                    isTrungTen = true;
-                }
-                if (kiemTraTrungLich(monSelected, mon)) {
-                    isTrungGio = true;
-                }
+                if (monSelected.tenChuan === mon.tenChuan) isTrungTen = true;
+                if (kiemTraTrungLich(monSelected, mon)) isTrungGio = true;
             }
         }
 
-        if (isDaChon) {
-            tr.className = 'mon-da-chon';
-        } else if (isTrungTen || isTrungGio) {
-            tr.className = 'mon-bi-khoa';
-        } else {
-            tr.className = 'mon-nhom-' + mon.nhom;
-        }
+        if (isDaChon) tr.className = 'mon-da-chon';
+        else if (isTrungTen || isTrungGio) tr.className = 'mon-bi-khoa';
+        else tr.className = 'mon-nhom-' + mon.nhom;
 
         var textTkb = '';
         for (var m = 0; m < mon.chiTietTkb.length; m++) {
@@ -723,10 +796,7 @@ function renderDanhSachMon() {
         }
 
         var isChecked = isDaChon ? 'checked' : '';
-
-        tr.innerHTML = '<td align="center">' +
-            '<input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')">' +
-            '</td>' +
+        tr.innerHTML = '<td align="center"><input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')"></td>' +
             '<td><font color="#000000">' + mon.ten + '</font></td>' +
             '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
             '<td align="center"><font color="#000000"><b>' + mon.nhom + '</b></font></td>' +
@@ -740,47 +810,31 @@ function renderDanhSachMon() {
 
 function clickChonMon(idMon) {
     var index = listIdDaChon.indexOf(idMon);
-    if (index !== -1) {
-        listIdDaChon.splice(index, 1);
-    } else {
-        listIdDaChon.push(idMon);
-    }
+    if (index !== -1) listIdDaChon.splice(index, 1);
+    else listIdDaChon.push(idMon);
 
     renderDanhSachMon();
     renderTKB();
 }
 
-var paymentInterval = null;
-var countdownInterval = null;
+// LOGIC MODAL THANH TOÁN
+var paymentInterval = null, countdownInterval = null;
 
 function openFeaturesModal() { 
     document.getElementById("viewFeatures").style.display = "block"; 
     document.getElementById("viewPayment").style.display = "none"; 
     document.getElementById("paymentModal").style.display = "flex"; 
 }
-
-function closePaymentModal() { 
-    document.getElementById("paymentModal").style.display = "none"; 
-    stopTimers(); 
-}
-
-function backToFeatures() { 
-    document.getElementById("viewFeatures").style.display = "block"; 
-    document.getElementById("viewPayment").style.display = "none"; 
-    stopTimers(); 
-}
-
-function stopTimers() { 
-    if (paymentInterval) clearInterval(paymentInterval); 
-    if (countdownInterval) clearInterval(countdownInterval); 
-}
+function closePaymentModal() { document.getElementById("paymentModal").style.display = "none"; stopTimers(); }
+function backToFeatures() { document.getElementById("viewFeatures").style.display = "block"; document.getElementById("viewPayment").style.display = "none"; stopTimers(); }
+function stopTimers() { if (paymentInterval) clearInterval(paymentInterval); if (countdownInterval) clearInterval(countdownInterval); }
 
 function goToPaymentMethods() {
     document.getElementById("viewFeatures").style.display = "none";
     document.getElementById("viewPayment").style.display = "block";
     var urlVietQr = "https://img.vietqr.io/image/ICB-0969435625-compact2.png?amount=100000&addInfo=" + encodeURIComponent("DANG KY VDUT PREMIUM") + "&accountName=" + encodeURIComponent("PHAN LE THANH VINH");
     document.getElementById("imgVietQR").src = urlVietQr;
-    startCheckingPayment("100000", "VDUT PREMIUM");
+    startCheckingPayment("100000", "DANG KY VDUT PREMIUM");
     startCountdownTimer(600);
 }
 
@@ -788,13 +842,9 @@ function startCountdownTimer(seconds) {
     var timerDisplay = document.getElementById("paymentCountdown");
     countdownInterval = setInterval(function() {
         seconds--;
-        var mins = Math.floor(seconds / 60); 
-        var secs = seconds % 60;
+        var mins = Math.floor(seconds / 60); var secs = seconds % 60;
         timerDisplay.innerText = "Thời gian thanh toán còn lại: " + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
-        if (seconds <= 0) { 
-            clearInterval(countdownInterval); 
-            closePaymentModal(); 
-        }
+        if (seconds <= 0) { clearInterval(countdownInterval); closePaymentModal(); }
     }, 1000);
 }
 
@@ -825,10 +875,7 @@ function startCheckingPayment(amount, description) {
 
 function handleCardNumberInput(input) {
     var value = input.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
-    var parts = []; 
-    for (var i = 0; i < value.length; i += 4) { 
-        parts.push(value.substring(i, i + 4)); 
-    }
+    var parts = []; for (var i = 0; i < value.length; i += 4) parts.push(value.substring(i, i + 4));
     input.value = parts.join(' ');
     document.getElementById("logoVisa").classList.remove("active"); 
     document.getElementById("logoMastercard").classList.remove("active");
@@ -842,25 +889,19 @@ function handleCardExpiryInput(input) {
 }
 
 function checkLuhn(cardNumber) {
-    var cleanNumber = cardNumber.replace(/\s+/g, ''); 
-    if (cleanNumber.length < 13) return false;
-    var sum = 0; 
-    var shouldDouble = false;
+    var cleanNumber = cardNumber.replace(/\s+/g, ''); if (cleanNumber.length < 13) return false;
+    var sum = 0, shouldDouble = false;
     for (var i = cleanNumber.length - 1; i >= 0; i--) {
         var digit = parseInt(cleanNumber.charAt(i));
         if (shouldDouble) { digit *= 2; if (digit > 9) digit -= 9; }
-        sum += digit; 
-        shouldDouble = !shouldDouble;
+        sum += digit; shouldDouble = !shouldDouble;
     }
     return (sum % 10 === 0);
 }
 
 function validateAndPayCard(event) { 
     event.preventDefault(); 
-    if (!checkLuhn(document.getElementById("cardNumberInput").value)) { 
-        alert("Số thẻ không hợp lệ!"); 
-        return; 
-    } 
+    if (!checkLuhn(document.getElementById("cardNumberInput").value)) { alert("Số thẻ không hợp lệ!"); return; } 
     alert("Cảm ơn bạn! Hệ thống đang xử lý giao dịch thẻ."); 
 }
 
@@ -878,10 +919,10 @@ function switchTab(tab) {
     }
 }
 
-window.onclick = function(event) { 
-    if (event.target == document.getElementById("paymentModal")) closePaymentModal(); 
-}
+window.onclick = function(event) { if (event.target == document.getElementById("paymentModal")) closePaymentModal(); }
 
+// CHẠY TRANG WEB
+khoiTaoBoLoc();
 renderDanhSachMon();
 renderTKB();
 </script>
