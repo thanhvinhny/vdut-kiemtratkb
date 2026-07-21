@@ -64,21 +64,25 @@
             font-weight: bold;
         }
 
+        /* Cố định chiều cao dòng của bảng TKB */
         table.timetable-grid tr {
             height: 38px;
         }
 
+        /* Xóa toàn bộ đệm và căn chỉnh của ô TD trên bảng TKB */
         table.timetable-grid td {
             position: relative;
             padding: 0 !important;
+            margin: 0 !important;
+            vertical-align: top;
         }
 
+        /* Khối nội dung môn học dãn tràn 100% không gian ô */
         .event-box {
             background-color: #f0f0f0;
-            border: 1px solid #000000;
-            box-sizing: border-box;
             width: 100%;
             height: 100%;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -87,6 +91,7 @@
             text-align: center;
             color: #000000;
             padding: 2px;
+            margin: 0;
         }
 
         .clear {
