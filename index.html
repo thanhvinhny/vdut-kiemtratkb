@@ -29,7 +29,6 @@
             width: 49%;
             float: left;
             padding: 3px;
-            border: 2px solid #000000;
             box-sizing: border-box;
         }
 
@@ -37,43 +36,59 @@
             width: 50%;
             float: right;
             padding: 3px;
-            border: 2px solid #000000;
             box-sizing: border-box;
         }
 
+        /* DÒNG PHÂN NHÓM TIÊU ĐỀ */
+        tr.header-nhom { 
+            background-color: #e0e0e0 !important; 
+            color: #000000; 
+            font-weight: bold; 
+        }
+
+        /* TÔNG MÀU PASTEL NHẸ NHÀNG */
+        tr.mon-nhom-38 { background-color: #f0fdf4; }
+        tr.mon-nhom-39 { background-color: #f0f9ff; }
+        tr.mon-nhom-40 { background-color: #fff7ed; }
+        tr.mon-nhom-41 { background-color: #fdf4ff; }
+
+        /* MÔN ĐÃ CHỌN */
+        tr.mon-da-chon {
+            background-color: #b0b0b0 !important; 
+            color: #000000 !important;
+            font-weight: bold;
+        }
+
+        /* MÔN BỊ KHÓA (TRÙNG LỊCH/TÊN) */
         tr.mon-bi-khoa {
-            background-color: #e0e0e0 !important;
-            color: #555555 !important;
+            background-color: #f5f5f5 !important;
+            color: #999999 !important;
         }
-
         tr.mon-bi-khoa font {
-            color: #555555 !important;
+            color: #999999 !important;
         }
-
         tr.mon-bi-khoa input {
             display: none;
         }
 
-        /* Mon da tick chon */
-        tr.mon-da-chon {
-            background-color: #a8a8a8 !important; 
-            font-weight: bold;
+        /* BẢNG TKB BÊN PHẢI */
+        table.bang-tkb {
+            height: 100%;
         }
 
-        /* Chieu cao o TKB */
         table.bang-tkb tr {
             height: 38px;
         }
 
         table.bang-tkb td {
-            position: relative;
+            height: 1px;
             padding: 0 !important;
             margin: 0 !important;
             vertical-align: top;
         }
 
+        /* THẺ MÔN HỌC TRÊN TKB */
         .the-mon-hoc {
-            background-color: #b8b8b8; 
             width: 100%;
             height: 100%;
             box-sizing: border-box;
@@ -85,7 +100,13 @@
             text-align: center;
             padding: 2px;
             font-weight: bold;
+            color: #000000;
         }
+
+        .the-mon-hoc.nhom-38 { background-color: #bbf7d0; }
+        .the-mon-hoc.nhom-39 { background-color: #bae6fd; }
+        .the-mon-hoc.nhom-40 { background-color: #fed7aa; }
+        .the-mon-hoc.nhom-41 { background-color: #f5d0fe; }
 
         .xoa-float {
             clear: both;
@@ -101,11 +122,11 @@
     </div>
 
     <div class="cot-trai">
-        <table border="1" cellpadding="2" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
+        <table border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
             <thead>
-                <tr bgcolor="#CCCCCC">
-                    <th width="4%">Chọn</th>
-                    <th width="28%">Tên Môn Học</th>
+                <tr bgcolor="#E0E0E0">
+                    <th width="5%">Chọn</th>
+                    <th width="27%">Tên Môn Học</th>
                     <th width="20%">Mã Lớp HP</th>
                     <th width="6%">Nhóm</th>
                     <th width="18%">Giảng Viên</th>
@@ -120,7 +141,7 @@
     <div class="cot-phai">
         <table class="bang-tkb" border="1" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
             <thead>
-                <tr bgcolor="#CCCCCC" style="height: 25px;">
+                <tr bgcolor="#E0E0E0" style="height: 25px;">
                     <th width="20%">Tiết / Giờ</th>
                     <th width="13%">Thứ 2</th>
                     <th width="13%">Thứ 3</th>
@@ -197,7 +218,6 @@ var dataGoc = [
     { id: 41214, khoa: 24, nhom: 41, malop: "106365026102441", ten: "Anh văn chuyên ngành", sl: 42, gv: "Tăng Anh Tuấn", tkb: ";6-8,B104;;;;;", tuan: "1-16", lop: "24N41(DT4)" }
 ];
 
-// Ham tinh So tin chi theo ten mon (Da cap nhat)
 function tinhSoTinChi(tenMon) {
     if (tenMon.indexOf("TN ") !== -1 || tenMon.indexOf("TN Kỹ thuật số") !== -1) return 0;
     if (tenMon.indexOf("Tín hiệu và hệ thống") !== -1) return 4;
@@ -206,6 +226,15 @@ function tinhSoTinChi(tenMon) {
     if (tenMon.indexOf("Anh văn chuyên ngành") !== -1) return 3;
     if (tenMon.indexOf("Chủ nghĩa Xã hội khoa học") !== -1) return 2;
     return 3;
+}
+
+// Hàm lấy ký tự phân nhóm (VD: 38A, 38B hoặc chỉ 38)
+function layTenNhomCon(mon) {
+    var kyTuCuoi = mon.malop.slice(-1);
+    if (kyTuCuoi === 'A' || kyTuCuoi === 'B') {
+        return 'NHÓM ' + mon.nhom + kyTuCuoi;
+    }
+    return 'NHÓM ' + mon.nhom;
 }
 
 function docChuoiTKB(chuoiTkb) {
@@ -237,7 +266,6 @@ function docChuoiTKB(chuoiTkb) {
     return danhSachTkb;
 }
 
-// Chuan hoa ten mon
 function rutGonTenMon(tenMon) {
     return tenMon.replace("(Blended learning)", "").trim();
 }
@@ -326,11 +354,16 @@ function renderTKB() {
                 }
 
                 oBatDau.rowSpan = soTietHop;
-                oBatDau.innerHTML = '<div class="the-mon-hoc">' +
+                
+                // Đã chỉnh hiển thị TKB chuẩn theo yêu cầu mới
+                var tenNhomHienThi = layTenNhomCon(mon);
+                var phongHienThi = slot.phongHoc || 'N/A';
+
+                oBatDau.innerHTML = '<div class="the-mon-hoc nhom-' + mon.nhom + '">' +
                     '<b>' + mon.ten + '</b><br>' +
-                    '<font color="#000000">' + mon.malop + '</font><br>' +
-                    '<font color="#000000">GV: ' + mon.gv + '</font><br>' +
-                    '<font color="#000000">P: ' + (slot.phongHoc || 'N/A') + '</font>' +
+                    '<span>' + tenNhomHienThi + '</span><br>' +
+                    '<span>GV: ' + mon.gv + '</span><br>' +
+                    '<span>' + phongHienThi + '</span>' +
                     '</div>';
             }
         }
@@ -351,8 +384,19 @@ function renderDanhSachMon() {
     }
     document.getElementById('tong-tc').innerText = tongTC;
 
+    var currentNhom = null;
+
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         var mon = danhSachMonHoc[i];
+
+        if (mon.nhom !== currentNhom) {
+            currentNhom = mon.nhom;
+            var trNhom = document.createElement('tr');
+            trNhom.className = 'header-nhom';
+            trNhom.innerHTML = '<td colspan="7" align="center">NHÓM ' + currentNhom + '</td>';
+            bodyDanhSach.appendChild(trNhom);
+        }
+
         var tr = document.createElement('tr');
 
         var isDaChon = listIdDaChon.indexOf(mon.id) !== -1;
@@ -375,6 +419,8 @@ function renderDanhSachMon() {
             tr.className = 'mon-da-chon';
         } else if (isTrungTen || isTrungGio) {
             tr.className = 'mon-bi-khoa';
+        } else {
+            tr.className = 'mon-nhom-' + mon.nhom;
         }
 
         var textTkb = '';
@@ -389,7 +435,7 @@ function renderDanhSachMon() {
             '</td>' +
             '<td><font color="#000000">' + mon.ten + '</font></td>' +
             '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
-            '<td align="center"><font color="#000000">' + mon.nhom + '</font></td>' +
+            '<td align="center"><font color="#000000"><b>' + mon.nhom + '</b></font></td>' +
             '<td><font color="#000000">' + mon.gv + '</font></td>' +
             '<td align="center"><font color="#000000">' + mon.stc + '</font></td>' +
             '<td><font size="1" color="#000000">' + (textTkb || '-') + '</font></td>';
