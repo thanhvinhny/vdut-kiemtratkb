@@ -500,8 +500,9 @@
         </div>
     </div>
 
-    <!-- TẢI FILE DATA TỪ BÊN NGOÀI -->
+    <!-- TẢI FILE DATA VÀ MAP GIẢNG VIÊN -->
     <script src="data.js"></script>
+    <script src="giangvien.js"></script>
 
 <script>
 var gioHoc = {
@@ -584,6 +585,12 @@ function khoiTaoBoLoc() {
         var khoaThat = parseInt(item.khoa);
         var nhomThat = parseInt(item.nhom);
 
+        // TỰ ĐỘNG TRA CỨU TÊN GIẢNG VIÊN TỪ MAP LỚP (NẾU CÓ TRONG GIANGVIEN.JS)
+        var tenGV = item.gv;
+        if (typeof mapGiangVien !== 'undefined' && mapGiangVien[item.malop]) {
+            tenGV = mapGiangVien[item.malop];
+        }
+
         danhSachMonHoc.push({
             id: item.id,
             khoa: khoaThat,
@@ -591,7 +598,7 @@ function khoiTaoBoLoc() {
             malop: item.malop,
             ten: item.ten,
             sl: item.sl,
-            gv: item.gv,
+            gv: tenGV,
             tkbGoc: item.tkb,
             tuan: item.tuan,
             lop: item.lop,
