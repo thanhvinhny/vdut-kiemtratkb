@@ -500,8 +500,9 @@
         </div>
     </div>
 
-    <!-- TẢI FILE DATA VÀ MAP GIẢNG VIÊN -->
+    <!-- TẢI CÁC FILE DỮ LIỆU JS -->
     <script src="data.js"></script>
+    <script src="magv.js"></script>
     <script src="giangvien.js"></script>
 
 <script>
@@ -585,9 +586,15 @@ function khoiTaoBoLoc() {
         var khoaThat = parseInt(item.khoa);
         var nhomThat = parseInt(item.nhom);
 
-        // TỰ ĐỘNG TRA CỨU TÊN GIẢNG VIÊN TỪ MAP LỚP (NẾU CÓ TRONG GIANGVIEN.JS)
+        // LOGIC TRA CỨU TÊN GIẢNG VIÊN THEO THỨ TỰ ƯU TIÊN:
+        // 1. Kiểm tra Mã GV trong file magv.js
+        // 2. Nếu không có -> Kiểm tra Mã Lớp HP trong file giangvien.js
+        // 3. Nếu cả 2 đều không có -> Giữ nguyên item.gv cũ
         var tenGV = item.gv;
-        if (typeof mapGiangVien !== 'undefined' && mapGiangVien[item.malop]) {
+        
+        if (typeof mapMaGV !== 'undefined' && mapMaGV[item.gv]) {
+            tenGV = mapMaGV[item.gv];
+        } else if (typeof mapGiangVien !== 'undefined' && mapGiangVien[item.malop]) {
             tenGV = mapGiangVien[item.malop];
         }
 
