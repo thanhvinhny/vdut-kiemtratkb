@@ -145,6 +145,10 @@
 
     <a href="index.html" class="btn-quay-lai">QUAY LẠI CHỌN MÔN</a>
 
+    <script src="data.js"></script>
+    <script src="magv.js"></script>
+    <script src="giangvien.js"></script>
+
 <script>
 var gioHoc = {
     1: "7h00 - 7h50", 2: "8h00 - 8h50", 3: "9h00 - 9h50", 4: "10h00 - 10h50", 5: "11h00 - 11h50",
@@ -172,6 +176,27 @@ function taoKhungTKB() {
     }
 }
 
+function timThongTinInDatabase(maLopHp) {
+    if (typeof dataGoc !== 'undefined' && Array.isArray(dataGoc)) {
+        for (var i = 0; i < dataGoc.length; i++) {
+            if (dataGoc[i].malop === maLopHp) {
+                var tenGV = dataGoc[i].gv;
+                if (typeof mapMaGV !== 'undefined' && mapMaGV[dataGoc[i].gv]) {
+                    tenGV = mapMaGV[dataGoc[i].gv];
+                } else if (typeof mapGiangVien !== 'undefined' && mapGiangVien[dataGoc[i].malop]) {
+                    tenGV = mapGiangVien[dataGoc[i].malop];
+                }
+                return {
+                    ten: dataGoc[i].ten,
+                    gv: tenGV,
+                    nhom: dataGoc[i].nhom
+                };
+            }
+        }
+    }
+    return null;
+}
+
 function xuLyParseVaVeTKB() {
     var rawText = document.getElementById("inputPasteData").value.trim();
     if (!rawText) {
@@ -185,46 +210,66 @@ function xuLyParseVaVeTKB() {
         "Thứ 2": 0, "Thứ 3": 1, "Thứ 4": 2, "Thứ 5": 3, "Thứ 6": 4, "Thứ 7": 5
     };
 
-    var pattern = /(\d{8,15}\.\d+[\.\w]*)(.+?)(Thứ\s*[2-7]:\s*\d+-\d+,[^\s]+)/gi;
+    var codeRegex = /(\d{6,10}\.\d{4}\.\d{2}\.[A-Za-z0-9]+)/g;
+    var matches = [];
     var match;
+
+    while ((match = codeRegex.exec(rawText)) !== null) {
+        matches.push({
+            code: match[1],
+            index: match.index
+        });
+    }
+
+    if (matches.length === 0) {
+        alert("Không nhận diện được lịch học! Vui lòng dán đúng bảng Đăng ký học phần.");
+        return;
+    }
+
     var dsMonParse = [];
 
-    while ((match = pattern.exec(rawText)) !== null) {
-        var maLopHp = match[1].trim();
-        var middleText = match[2].trim();
-        var chuoiTkb = match[3].trim();
+    for (var i = 0; i < matches.length; i++) {
+        var startIdx = matches[i].index;
+        var endIdx = (i + 1 < matches.length) ? matches[i + 1].index : rawText.length;
+        var blockText = rawText.substring(startIdx, endIdx);
+        var maLopHp = matches[i].code;
 
         var arrP = maLopHp.split('.');
         var nhom = arrP[arrP.length - 1] || "1";
 
-        var giangVien = "";
-        var tenMon = middleText;
+        var dbInfo = timThongTinInDatabase(maLopHp);
+        var tenMon = dbInfo ? dbInfo.ten : "";
+        var giangVien = dbInfo ? dbInfo.gv : "";
 
-        var gvMatches = middleText.match(/([A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ][a-zàáảãạăắằẳẵặâấầnẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]+(?:\s+[A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ][a-zàáảãạăắằẳẵặâấầnẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]+)+)/g);
-        
-        if (gvMatches && gvMatches.length > 0) {
-            giangVien = gvMatches[gvMatches.length - 1];
-            var posGV = middleText.lastIndexOf(giangVien);
-            tenMon = middleText.substring(0, posGV).trim();
+        if (!tenMon || !giangVien) {
+            var lines = blockText.split(/[\n\r]+/);
+            for (var l = 0; l < lines.length; l++) {
+                var lineClean = lines[l].trim();
+                if (lineClean && lineClean.indexOf(maLopHp) === -1 && !lineClean.match(/^Thứ\s*[2-7]/i) && !lineClean.match(/^\d+$/)) {
+                    if (!tenMon) {
+                        tenMon = lineClean.replace(/^\d+\s*/, '');
+                    } else if (!giangVien) {
+                        giangVien = lineClean.replace(/\s*Thứ.*$/, '').replace(/^\d+\s*/, '');
+                    }
+                }
+            }
         }
 
-        tenMon = tenMon.replace(/^\d+/, '').trim();
+        var tkbRegex = /(Thứ\s*[2-7])\s*:\s*(\d+)-(\d+)\s*,\s*([^\s\t\r\n\,]+)/gi;
+        var tkbMatch;
 
-        var matchTkb = chuoiTkb.match(/(Thứ\s*[2-7]):\s*(\d+)-(\d+),([^\s]+)/i);
-        if (matchTkb) {
-            var thuStr = matchTkb[1].trim();
-            var tietBD = parseInt(matchTkb[2]);
-            var tietKT = parseInt(matchTkb[3]);
-            var phong = matchTkb[4].trim();
-
-            phong = phong.replace(/-1\d{1,2}.*$/g, '').trim();
+        while ((tkbMatch = tkbRegex.exec(blockText)) !== null) {
+            var thuStr = tkbMatch[1].replace(/\s+/g, ' ').trim();
+            var tietBD = parseInt(tkbMatch[2]);
+            var tietKT = parseInt(tkbMatch[3]);
+            var phong = tkbMatch[4].trim().replace(/-1\d{1,2}.*$/g, '');
 
             if (tenThuMap[thuStr] !== undefined) {
                 dsMonParse.push({
                     maLopHp: maLopHp,
-                    tenMon: tenMon,
+                    tenMon: tenMon || maLopHp,
                     nhom: nhom,
-                    gv: giangVien,
+                    gv: giangVien || "",
                     thuIndex: tenThuMap[thuStr],
                     tietBD: tietBD,
                     tietKT: tietKT,
@@ -239,8 +284,8 @@ function xuLyParseVaVeTKB() {
         return;
     }
 
-    for (var i = 0; i < dsMonParse.length; i++) {
-        var item = dsMonParse[i];
+    for (var k = 0; k < dsMonParse.length; k++) {
+        var item = dsMonParse[k];
         var oBatDau = document.getElementById('o-' + item.thuIndex + '-' + item.tietBD);
         if (oBatDau) {
             var soTietHop = item.tietKT - item.tietBD + 1;
@@ -254,7 +299,7 @@ function xuLyParseVaVeTKB() {
             oBatDau.innerHTML = '<div class="the-mon-hoc" style="background-color: ' + mauNhom + ';">' +
                 '<b>' + item.tenMon + '</b><br>' +
                 '<span>NHÓM ' + item.nhom + '</span><br>' +
-                '<span>GV: ' + item.gv + '</span><br>' +
+                (item.gv ? '<span>GV: ' + item.gv + '</span><br>' : '') +
                 '<span>' + item.phong + '</span>' +
                 '</div>';
         }
