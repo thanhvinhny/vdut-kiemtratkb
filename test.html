@@ -29,10 +29,10 @@
             position: relative;
         }
 
-        /* KHU VỰC ĐỒNG BỘ LỊCH BẠN THÂN */
+        /* KHU VỰC ĐỒNG BỘ LỊCH HỌC BẠN BÈ */
         .khu-vuc-ban-than {
             border: 1px dashed #000000;
-            background-color: #f0f7ff;
+            background-color: #f8f9fa;
             padding: 8px 12px;
             margin-bottom: 8px;
             display: flex;
@@ -134,16 +134,16 @@
             font-weight: bold; 
         }
 
-        /* MÔN ĐÃ CHỌN CỦA BẠN */
+        /* MÔN ĐÃ CHỌN CỦA MÌNH */
         tr.mon-da-chon {
             background-color: #b0b0b0 !important; 
             color: #000000 !important;
             font-weight: bold;
         }
 
-        /* MÔN CỦA BẠN THÂN (ĐƯỢC ĐÁNH DẤU MỜ) */
+        /* MÔN CỦA BẠN ĐÃ ĐĂNG KÝ TRƯỚC DÙNG NỀN HIGHLIGHT VÀNG */
         tr.mon-ban-than-chon {
-            border: 2px dashed #0056b3 !important;
+            background-color: #fff3cd !important;
         }
 
         /* MÔN BỊ KHÓA (TRÙNG LỊCH/TÊN) */
@@ -191,7 +191,7 @@
             color: #000000;
         }
 
-        /* THẺ MÔN HỌC BẠN THÂN (MỜ MỜ BÊN DƯỚI) */
+        /* THẺ MÔN HỌC CỦA BẠN (HIỂN THỊ MỜ BÊN DƯỚI) */
         .the-mon-hoc-ban-than {
             position: absolute;
             top: 0; left: 0;
@@ -205,10 +205,10 @@
             text-align: center;
             padding: 2px;
             font-weight: bold;
-            color: #000000;
-            opacity: 0.45; /* ĐỘ MỜ 45% */
-            border: 1px dashed #000;
-            background-color: #d1e7dd;
+            color: #856404;
+            opacity: 0.5; /* MỜ MỜ BÊN DƯỚI */
+            border: 1px dashed #ffebaa;
+            background-color: #fff3cd;
             pointer-events: none;
             z-index: 1;
         }
@@ -467,23 +467,23 @@
 
     <h2>VDUT - TKB</h2>
 
-    <!-- KHU VỰC ĐỒNG BỘ LỊCH HỌC BẠN THÂN -->
+    <!-- KHU VỰC ĐỒNG BỘ LỊCH HỌC CÙNG BẠN -->
     <div class="khu-vuc-ban-than">
         <div>
-            <b>🤝 ĐỒNG BỘ LỊCH HỌC BẠN THÂN:</b> 
-            <span id="txtTrangThaiBanThan" style="color: #666; margin-left: 5px;">Chưa nhập lịch bạn thân.</span>
+            <b>Đồng bộ lịch học:</b> 
+            <span id="txtTrangThaiBanThan" style="color: #666; margin-left: 5px;">Chưa tải lịch đối chiếu.</span>
         </div>
         <div>
-            <button class="btn-ban-than" onclick="xuatLichBanThan()">📤 Xuất Lịch Của Tôi</button>
-            <button class="btn-ban-than" onclick="document.getElementById('fileInputBanThan').click()">📥 Nhập Lịch Bạn Thân</button>
-            <button class="btn-ban-than btn-xoa-ban-than" id="btnXoaLichBanThan" onclick="xoaLichBanThan()" style="display: none;">✖ Xóa Lịch Bạn</button>
+            <button class="btn-ban-than" onclick="xuatLichBanThan()">Xuất lịch hiện tại</button>
+            <button class="btn-ban-than" onclick="document.getElementById('fileInputBanThan').click()">Tải lịch bạn học vào</button>
+            <button class="btn-ban-than btn-xoa-ban-than" id="btnXoaLichBanThan" onclick="xoaLichBanThan()" style="display: none;">Bỏ đối chiếu</button>
             <input type="file" id="fileInputBanThan" accept=".json" style="display: none;" onchange="nhapLichBanThan(event)">
         </div>
     </div>
 
     <!-- KHU VỰC BỘ LỌC KHÓA HỌC & NHÓM HỌC -->
     <div class="khu-vuc-bo-loc">
-        <button class="btn-toggle-bo-loc" id="btnToggleBoLoc" onclick="toggleKhungBoLoc()">▲ Thu gọn</button>
+        <button class="btn-toggle-bo-loc" id="btnToggleBoLoc" onclick="toggleKhungBoLoc()">Thu gọn</button>
 
         <div id="noiDungBoLoc">
             <div class="dong-loc">
@@ -620,7 +620,7 @@ var gioHoc = {
 var danhSachMonHoc = [];
 var listIdDaChon = [];
 var listNhomDuocChon = [];
-var listIdBanThan = []; // LƯU DANH SÁCH MÔN HỌC BẠN THÂN CHỌN
+var listIdBanThan = [];
 
 var mauBangPastel = ['#f0fdf4', '#f0f9ff', '#fff7ed', '#fdf4ff', '#fef2f2', '#fefce8', '#f5f3ff'];
 var mauTkbPastel = ['#bbf7d0', '#bae6fd', '#fed7aa', '#f5d0fe', '#fecaca', '#fef08a', '#ddd6fe'];
@@ -635,10 +635,10 @@ function getMauNhomTkb(nhomNum) {
     return mauTkbPastel[index];
 }
 
-// XUẤT LỊCH CỦA TÔI RA FILE .JSON
+// XUẤT LỊCH CỦA MÌNH RA FILE .JSON
 function xuatLichBanThan() {
     if (listIdDaChon.length === 0) {
-        alert("Bạn chưa chọn môn học nào để xuất lịch!");
+        alert("Chưa có môn học nào được chọn để xuất lịch.");
         return;
     }
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(listIdDaChon));
@@ -650,7 +650,7 @@ function xuatLichBanThan() {
     downloadAnchor.remove();
 }
 
-// NHẬP LỊCH BẠN THÂN TỪ FILE .JSON
+// NHẬP LỊCH BẠN HỌC TỪ FILE .JSON
 function nhapLichBanThan(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -661,24 +661,24 @@ function nhapLichBanThan(event) {
             var dataArr = JSON.parse(e.target.result);
             if (Array.isArray(dataArr)) {
                 listIdBanThan = dataArr;
-                document.getElementById("txtTrangThaiBanThan").innerHTML = '<span style="color: green;">✓ Đã hiện lịch của bạn thân (Mờ đè bên dưới)!</span>';
+                document.getElementById("txtTrangThaiBanThan").innerHTML = '<span style="color: #856404; font-weight: bold;">Đang đối chiếu lịch học (Nền mờ bên dưới).</span>';
                 document.getElementById("btnXoaLichBanThan").style.display = "inline-block";
                 renderDanhSachMon();
                 renderTKB();
             } else {
-                alert("File không đúng định dạng lịch VDUT!");
+                alert("Định dạng file lịch không hợp lệ.");
             }
         } catch (err) {
-            alert("Đã xảy ra lỗi khi đọc file!");
+            alert("Không thể đọc được file này.");
         }
     };
     reader.readAsText(file);
 }
 
-// XÓA LỊCH BẠN THÂN
+// BỎ ĐỐI CHIẾU LỊCH BẠN HỌC
 function xoaLichBanThan() {
     listIdBanThan = [];
-    document.getElementById("txtTrangThaiBanThan").innerText = "Chưa nhập lịch bạn thân.";
+    document.getElementById("txtTrangThaiBanThan").innerText = "Chưa tải lịch đối chiếu.";
     document.getElementById("btnXoaLichBanThan").style.display = "none";
     document.getElementById("fileInputBanThan").value = "";
     renderDanhSachMon();
@@ -692,10 +692,10 @@ function toggleKhungBoLoc() {
 
     if (noiDung.style.display === "none") {
         noiDung.style.display = "block";
-        btn.innerText = "▲ Thu gọn";
+        btn.innerText = "Thu gọn";
     } else {
         noiDung.style.display = "none";
-        btn.innerText = "▼ Mở rộng";
+        btn.innerText = "Mở rộng";
     }
 }
 
@@ -862,7 +862,7 @@ function taoKhungTKB() {
 function renderTKB() {
     taoKhungTKB();
     
-    // 1. VẼ LỊCH CỦA BẠN THÂN (HIỂN THỊ MỜ DƯỚI ĐÁY)
+    // 1. HIỂN THỊ LỊCH ĐỐI CHIẾU MỜ BÊN DƯỚI
     var listMonBanThan = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (listIdBanThan.indexOf(danhSachMonHoc[i].id) !== -1) {
@@ -878,13 +878,13 @@ function renderTKB() {
             if (oBatDau) {
                 var divBanThan = document.createElement('div');
                 divBanThan.className = 'the-mon-hoc-ban-than';
-                divBanThan.innerHTML = '👤 <b>' + mon.ten + '</b><br><span>' + layTenNhomCon(mon) + '</span>';
+                divBanThan.innerHTML = '<b>' + mon.ten + '</b><br><span>' + layTenNhomCon(mon) + '</span>';
                 oBatDau.appendChild(divBanThan);
             }
         }
     }
 
-    // 2. VẼ LỊCH CỦA MÌNH CHỌN (ĐÈ NỔI LÊN TRÊN)
+    // 2. HIỂN THỊ LỊCH CHÍNH ĐÃ CHỌN ĐÈ NỔI LÊN TRÊN
     var listMonDaChon = [];
     for (var i = 0; i < danhSachMonHoc.length; i++) {
         if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
@@ -969,14 +969,13 @@ function renderDanhSachMon() {
 
         if (isDaChon) {
             tr.className = 'mon-da-chon';
+        } else if (isBanThanChon) {
+            // ĐÃ ĐĂNG KÝ TRƯỚC -> HIGHLIGHT MÀU VÀNG
+            tr.className = 'mon-ban-than-chon';
         } else if (isTrungTen || isTrungGio) {
             tr.className = 'mon-bi-khoa';
         } else {
             tr.style.backgroundColor = getMauNhomBang(mon.nhom);
-        }
-
-        if (isBanThanChon) {
-            tr.className += ' mon-ban-than-chon';
         }
 
         var textTkb = '';
@@ -984,11 +983,9 @@ function renderDanhSachMon() {
             textTkb += mon.chiTietTkb[m].textHienThi + '<br>';
         }
 
-        var iconBanThan = isBanThanChon ? ' <span title="Bạn thân đã chọn nhóm này!">👤</span>' : '';
-
         var isChecked = isDaChon ? 'checked' : '';
         tr.innerHTML = '<td align="center"><input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')"></td>' +
-            '<td><font color="#000000">' + mon.ten + iconBanThan + '</font></td>' +
+            '<td><font color="#000000">' + mon.ten + '</font></td>' +
             '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
             '<td align="center"><font color="#000000"><b>' + mon.nhom + '</b></font></td>' +
             '<td><font color="#000000">' + mon.gv + '</font></td>' +
