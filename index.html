@@ -158,6 +158,29 @@
             z-index: 999;
         }
 
+        .btn-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .badge-premium {
+            position: absolute;
+            top: -7px;
+            right: -5px;
+            background-color: #d9534f;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: bold;
+            padding: 1px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #000000;
+            z-index: 10;
+            line-height: 1;
+            pointer-events: none;
+        }
+
         .btn-bottom {
             background-color: #000000;
             color: #ffffff;
@@ -460,8 +483,11 @@
     <div class="xoa-float"></div>
 
     <div class="cum-nut-goc-phai">
-        <a href="tkb.html" class="btn-bottom">TẠO THỜI KHÓA BIỂU</a>
-        <button class="btn-bottom" onclick="openFeaturesModal()">TRA CỨU LỚP HỌC PHẦN</button>
+        <div class="btn-wrapper">
+            <span class="badge-premium">PREMIUM</span>
+            <a href="tkb.html" class="btn-bottom">TẠO THỜI KHÓA BIỂU</a>
+        </div>
+        <button class="btn-bottom" onclick="openFeaturesModal()">ĐĂNG KÝ</button>
     </div>
 
     <div class="modal-payment" id="paymentModal">
