@@ -60,7 +60,6 @@
             background-color: #333333;
         }
 
-        /* BẢNG TKB */
         table.bang-tkb {
             width: 100%;
             border-collapse: collapse;
@@ -92,7 +91,6 @@
             color: #000000;
         }
 
-        /* NÚT BẤM VỀ TRANG CHÍNH BÊN GÓC PHẢI */
         .btn-quay-lai {
             position: fixed;
             bottom: 20px;
@@ -122,14 +120,12 @@
 
     <h2>TẠO THỜI KHÓA BIỂU TỰ ĐỘNG</h2>
 
-    <!-- Ô NHẬP DỮ LIỆU COPY TỪ TRƯỜNG -->
     <div class="khu-vuc-nhap-data">
         <label>Dán bảng Đăng ký học phần (Ctrl+V vào đây):</label>
         <textarea id="inputPasteData" placeholder="Copy toàn bộ bảng các lớp đã đăng ký thành công dán vào đây..."></textarea>
         <button class="btn-xuly-paste" onclick="xuLyParseVaVeTKB()">VẼ THỜI KHÓA BIỂU</button>
     </div>
 
-    <!-- BẢNG TKB SẼ ĐƯỢC VẼ TẠI ĐÂY -->
     <div style="width: 100%;">
         <table class="bang-tkb" border="1" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
             <thead>
@@ -147,7 +143,6 @@
         </table>
     </div>
 
-    <!-- NÚT CHUYỂN VỀ TRANG XẾP MÔN -->
     <a href="index.html" class="btn-quay-lai">QUAY LẠI CHỌN MÔN</a>
 
 <script>
@@ -190,22 +185,32 @@ function xuLyParseVaVeTKB() {
         "Thứ 2": 0, "Thứ 3": 1, "Thứ 4": 2, "Thứ 5": 3, "Thứ 6": 4, "Thứ 7": 5
     };
 
-    var pattern = /(\d{8,15}\.\d+[\.\w]*)\s*([^\n\r\t]+?)\s*(\d+)\s*([^\n\r\t]+?)\s*(Thứ\s*\d:\s*\d+-\d+,[^\n\r\t]+)/gi;
+    var pattern = /(\d{8,15}\.\d+[\.\w]*)(.+?)(Thứ\s*[2-7]:\s*\d+-\d+,[^\s]+)/gi;
     var match;
     var dsMonParse = [];
 
     while ((match = pattern.exec(rawText)) !== null) {
         var maLopHp = match[1].trim();
-        var tenMon = match[2].trim();
-        var giangVien = match[4].trim();
-        var chuoiTkb = match[5].trim();
-
-        giangVien = giangVien.replace(/\d{1,2}\/\d{1,2}\/\d{4}.*$/g, '').trim();
+        var middleText = match[2].trim();
+        var chuoiTkb = match[3].trim();
 
         var arrP = maLopHp.split('.');
         var nhom = arrP[arrP.length - 1] || "1";
 
-        var matchTkb = chuoiTkb.match(/(Thứ\s*\d):\s*(\d+)-(\d+),(.*)/i);
+        var giangVien = "";
+        var tenMon = middleText;
+
+        var gvMatches = middleText.match(/([A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ][a-zàáảãạăắằẳẵặâấầnẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]+(?:\s+[A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ][a-zàáảãạăắằẳẵặâấầnẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]+)+)/g);
+        
+        if (gvMatches && gvMatches.length > 0) {
+            giangVien = gvMatches[gvMatches.length - 1];
+            var posGV = middleText.lastIndexOf(giangVien);
+            tenMon = middleText.substring(0, posGV).trim();
+        }
+
+        tenMon = tenMon.replace(/^\d+/, '').trim();
+
+        var matchTkb = chuoiTkb.match(/(Thứ\s*[2-7]):\s*(\d+)-(\d+),([^\s]+)/i);
         if (matchTkb) {
             var thuStr = matchTkb[1].trim();
             var tietBD = parseInt(matchTkb[2]);
@@ -230,7 +235,7 @@ function xuLyParseVaVeTKB() {
     }
 
     if (dsMonParse.length === 0) {
-        alert("Không nhận diện được lịch học! Vui lòng Ctrl+A copy lại nguyên bảng Đăng ký học phần.");
+        alert("Không nhận diện được lịch học! Vui lòng dán đúng bảng Đăng ký học phần.");
         return;
     }
 
@@ -256,7 +261,6 @@ function xuLyParseVaVeTKB() {
     }
 }
 
-// KHỞI TẠO KHUNG BẢNG TKB TRỐNG BAN ĐẦU
 taoKhungTKB();
 </script>
 
