@@ -3,120 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VDUT - TKB</title>
+    <title>TẠO THỜI KHÓA BIỂU</title>
     <style>
         body {
             font-family: "Times New Roman", Times, serif;
             background-color: #ffffff;
             color: #000000;
-            margin: 5px;
+            margin: 10px;
             font-size: 13px;
         }
 
         h2 {
             text-align: center;
             color: #000000;
-            margin: 2px 0;
+            margin: 5px 0 15px 0;
             text-transform: uppercase;
         }
 
-        .khu-vuc-bo-loc {
+        .khu-vuc-nhap-data {
             border: 1px solid #000000;
-            background-color: #f9f9f9;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            position: relative;
+            background: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 15px;
         }
 
-        .btn-toggle-bo-loc {
-            position: absolute;
-            top: 6px;
-            right: 10px;
-            padding: 3px 8px;
-            font-size: 11px;
+        .khu-vuc-nhap-data label {
             font-weight: bold;
-            font-family: inherit;
-            cursor: pointer;
-            background-color: #ffffff;
-            border: 1px solid #000000;
-            border-radius: 3px;
-        }
-        .btn-toggle-bo-loc:hover {
-            background-color: #e0e0e0;
+            font-size: 13px;
         }
 
-        .dong-loc {
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .dong-loc label.tieu-de-loc {
-            font-weight: bold;
-            min-width: 100px;
-        }
-
-        .danh-sach-checkbox-nhom {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 15px;
-            max-height: 120px;
-            overflow-y: auto;
+        .khu-vuc-nhap-data textarea {
+            width: 100%;
+            height: 120px;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 8px;
+            box-sizing: border-box;
             border: 1px solid #ccc;
-            padding: 5px 8px;
-            background: #fff;
-            flex: 1;
+            margin-top: 6px;
+            resize: vertical;
         }
 
-        .item-nhom-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .cot-trai {
-            width: 49%;
-            float: left;
-            padding: 3px;
-            box-sizing: border-box;
-        }
-
-        .cot-phai {
-            width: 50%;
-            float: right;
-            padding: 3px;
-            box-sizing: border-box;
-        }
-
-        tr.header-nhom { 
-            background-color: #e0e0e0 !important; 
-            color: #000000; 
-            font-weight: bold; 
-        }
-
-        tr.mon-da-chon {
-            background-color: #b0b0b0 !important; 
-            color: #000000 !important;
+        .btn-xuly-paste {
+            background-color: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 8px 20px;
             font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 8px;
+            text-transform: uppercase;
         }
 
-        tr.mon-bi-khoa {
-            background-color: #f5f5f5 !important;
-            color: #999999 !important;
-        }
-        tr.mon-bi-khoa font {
-            color: #999999 !important;
-        }
-        tr.mon-bi-khoa input {
-            display: none;
+        .btn-xuly-paste:hover {
+            background-color: #333333;
         }
 
         table.bang-tkb {
-            height: 100%;
+            width: 100%;
+            border-collapse: collapse;
         }
 
         table.bang-tkb tr {
@@ -145,10 +91,6 @@
             color: #000000;
         }
 
-        .xoa-float {
-            clear: both;
-        }
-
         .cum-nut-goc-phai {
             position: fixed;
             bottom: 20px;
@@ -158,293 +100,117 @@
             z-index: 999;
         }
 
-        .btn-bottom {
+        .btn-quay-lai, .btn-huong-dan {
             background-color: #000000;
             color: #ffffff;
             border: 2px solid #000000;
             padding: 10px 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             font-family: inherit;
             cursor: pointer;
             border-radius: 4px;
             text-transform: uppercase;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-bottom:hover {
+        .btn-quay-lai:hover, .btn-huong-dan:hover {
             background-color: #ffffff;
             color: #000000;
         }
 
-        .modal-payment { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background-color: rgba(0,0,0,0.5); 
-            z-index: 1000; 
-            justify-content: center; 
-            align-items: center; 
+        .modal-huong-dan {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
 
-        .modal-content { 
-            background-color: #ffffff; 
-            border: 2px solid #000000; 
-            border-radius: 6px; 
-            padding: 25px; 
-            width: 95%; 
-            max-width: 420px; 
-            text-align: center; 
-            position: relative; 
+        .modal-content-hd {
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 20px;
+            width: 95%;
+            max-width: 1100px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+            position: relative;
             box-sizing: border-box;
         }
 
-        .modal-title { 
-            font-size: 1.2rem; 
-            font-weight: 700; 
-            margin-top: 0; 
-            margin-bottom: 5px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
+        .close-modal-hd {
+            position: absolute;
+            top: 10px;
+            right: 18px;
+            font-size: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1;
         }
 
-        .modal-price { 
-            font-size: 1.5rem; 
-            font-weight: 800; 
-            margin-bottom: 20px; 
-            color: #000000; 
-        }
-
-        .contact-box {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px dashed #000000;
-            border-radius: 6px;
-            background-color: #fafafa;
-        }
-
-        .contact-box p {
-            margin: 0 0 12px 0;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #333333;
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .fb-link, .discord-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.95rem;
-            transition: transform 0.2s ease;
-        }
-
-        .fb-link { color: #1877f2; }
-        .discord-link { color: #5865F2; }
-
-        .fb-link:hover, .discord-link:hover {
-            transform: scale(1.05);
-            text-decoration: underline;
-        }
-
-        .social-icon {
-            width: 22px;
-            height: 22px;
-        }
-
-        .tab-buttons { 
-            display: flex; 
-            border-bottom: 2px solid #000000; 
-            margin-bottom: 20px; 
-        }
-
-        .tab-btn { 
-            font-family: inherit; 
-            flex: 1; 
-            padding: 10px 5px; 
-            background: none; 
-            border: none; 
-            font-weight: 700; 
-            cursor: pointer; 
-            font-size: 0.9rem; 
-        }
-
-        .tab-btn.active { 
-            background-color: #000000; 
-            color: #ffffff; 
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .qr-img { 
-            width: 200px; 
-            height: 200px; 
-            border: 1px solid #ccc; 
-            margin: 0 auto 10px auto; 
+        .img-huong-dan {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            margin-top: 12px;
             display: block;
         }
 
-        .status-payment { 
-            font-size: 0.85rem; 
-            color: #555555; 
-            margin: 10px 0 0 0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
+        .text-huong-dan {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 5px;
+            color: #000000;
         }
 
-        .spinner { 
-            width: 14px; 
-            height: 14px; 
-            border: 2px solid #ccc; 
-            border-top: 2px solid #000; 
-            border-radius: 50%; 
-            animation: spin 1s linear infinite; 
+        .btn-truy-cap-dut {
+            display: inline-block;
+            margin-top: 10px;
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
 
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-
-        .credit-form input { 
-            font-family: inherit; 
-            width: 100%; 
-            padding: 10px; 
-            margin: 8px 0; 
-            border: 1px solid #000000; 
-            border-radius: 4px; 
-            box-sizing: border-box; 
-            font-size: 0.9rem; 
-        }
-
-        .card-number-wrapper { position: relative; width: 100%; }
-
-        .card-logos { 
-            position: absolute; 
-            right: 12px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            display: flex; 
-            gap: 6px; 
-            pointer-events: none; 
-            align-items: center; 
-        }
-
-        .card-logo-img { 
-            height: 20px; 
-            width: auto; 
-            opacity: 0.15; 
-            transition: opacity 0.2s ease; 
-        }
-
-        .card-logo-img.active { opacity: 1; }
-
-        .btn-submit-pay { 
-            font-family: inherit; 
-            width: 100%; 
-            padding: 12px 0; 
-            background-color: #000000; 
-            color: #ffffff; 
-            border: none; 
-            border-radius: 4px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            margin-top: 10px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-        }
-
-        .close-modal-btn { 
-            position: absolute; 
-            top: 10px; 
-            right: 15px; 
-            font-size: 1.5rem; 
-            font-weight: 700; 
-            cursor: pointer; 
-        }
-
-        .back-modal-btn { 
-            position: absolute; 
-            top: 12px; 
-            left: 15px; 
-            font-size: 1.1rem; 
-            font-weight: 700; 
-            cursor: pointer; 
-            background: none; 
-            border: none; 
-            color: #000000; 
-        }
-
-        .payment-timer { 
-            font-size: 0.9rem; 
-            color: #000000; 
-            font-weight: 700; 
-            margin-bottom: 15px; 
-            letter-spacing: 1px; 
+        .btn-truy-cap-dut:hover {
+            background-color: #ffffff;
+            color: #000000;
         }
     </style>
 </head>
 <body>
 
-    <h2>VDUT - TKB</h2>
+    <h2>TẠO THỜI KHÓA BIỂU</h2>
 
-    <div class="khu-vuc-bo-loc">
-        <button class="btn-toggle-bo-loc" id="btnToggleBoLoc" onclick="toggleKhungBoLoc()">▲ Thu gọn</button>
-
-        <div id="noiDungBoLoc">
-            <div class="dong-loc">
-                <label class="tieu-de-loc">Chọn Khóa học:</label>
-                <select id="select-khoa" onchange="thayDoiKhoaHoc()" style="padding: 4px 8px; font-weight: bold;">
-                    <option value="">-- Chọn khóa học --</option>
-                </select>
-            </div>
-
-            <div class="dong-loc" id="khu-vuc-nhom" style="display: none;">
-                <label class="tieu-de-loc">Chọn Nhóm:</label>
-                <div class="danh-sach-checkbox-nhom" id="container-checkbox-nhom"></div>
-            </div>
-        </div>
+    <div class="khu-vuc-nhap-data">
+        <label>Ctrl + V vào đây:</label>
+        <textarea id="inputPasteData" placeholder="Ctrl + V vào đây"></textarea>
+        <button class="btn-xuly-paste" onclick="xuLyParseVaVeTKB()">TẠO THỜI KHÓA BIỂU</button>
     </div>
 
-    <div class="cot-trai">
-        <table border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
-            <thead>
-                <tr bgcolor="#E0E0E0">
-                    <th width="5%">Chọn</th>
-                    <th width="28%">Tên Môn Học</th>
-                    <th width="22%">Mã Lớp HP</th>
-                    <th width="6%">Nhóm</th>
-                    <th width="19%">Giảng Viên</th>
-                    <th width="20%">TKB</th>
-                </tr>
-            </thead>
-            <tbody id="body-danh-sach"></tbody>
-        </table>
-    </div>
-
-    <div class="cot-phai">
+    <div style="width: 100%;">
         <table class="bang-tkb" border="1" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" bordercolor="#000000">
             <thead>
                 <tr bgcolor="#E0E0E0" style="height: 25px;">
-                    <th width="20%">Tiết / Giờ</th>
+                    <th width="20%">TKB</th>
                     <th width="13%">Thứ 2</th>
                     <th width="13%">Thứ 3</th>
                     <th width="13%">Thứ 4</th>
@@ -453,81 +219,23 @@
                     <th width="15%">Thứ 7</th>
                 </tr>
             </thead>
-            <tbody id="body-tkb"></tbody>
+            <tbody id="body-tkb-pasted"></tbody>
         </table>
     </div>
 
-    <div class="xoa-float"></div>
-
     <div class="cum-nut-goc-phai">
-        <a href="tkb.html" class="btn-bottom">TẠO THỜI KHÓA BIỂU</a>
-        <button class="btn-bottom" onclick="openFeaturesModal()">ĐĂNG KÝ</button>
+        <button class="btn-huong-dan" onclick="openHuongDanModal()">HƯỚNG DẪN SỬ DỤNG</button>
+        <a href="index.html" class="btn-quay-lai">QUAY LẠI</a>
     </div>
 
-    <div class="modal-payment" id="paymentModal">
-        <div class="modal-content">
-            <span class="close-modal-btn" onclick="closePaymentModal()">&times;</span>
-            
-            <div id="viewFeatures">
-                <div class="modal-title">GÓI VDUT PREMIUM</div>
-                <div class="modal-price" style="margin-top: 5px;">100.000 đ</div>
-                
-                <div class="contact-box">
-                    <p>Liên hệ để biết thêm thông tin chi tiết các chức năng:</p>
-                    <div class="contact-links">
-                        <a href="https://j2c.cc/admin" target="_blank" class="fb-link">
-                            <svg class="social-icon" viewBox="0 0 24 24" fill="#1877f2">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                            <span>Facebook</span>
-                        </a>
-
-                        <a href="https://discord.com/users/1159652891284492309" target="_blank" class="discord-link">
-                            <svg class="social-icon" viewBox="0 0 24 24" fill="#5865F2">
-                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.077 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.07 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                            </svg>
-                            <span>Discord</span>
-                        </a>
-                    </div>
-                </div>
-
-                <button class="btn-submit-pay" onclick="goToPaymentMethods()">Đăng Ký Gói</button>
+    <div class="modal-huong-dan" id="huongDanModal">
+        <div class="modal-content-hd">
+            <span class="close-modal-hd" onclick="closeHuongDanModal()">&times;</span>
+            <div class="text-huong-dan">COPY NHỮNG THÔNG TIN NHƯ ẢNH</div>
+            <div>
+                <a href="https://dangkytinchi.dut.udn.vn/" target="_blank" class="btn-truy-cap-dut">TRUY CẬP TRANG ĐĂNG KÝ TÍN CHỈ - DUT</a>
             </div>
-
-            <div id="viewPayment" style="display: none;">
-                <button class="back-modal-btn" onclick="backToFeatures()">&larr;</button>
-                <div class="modal-title">ĐĂNG KÝ VDUT PREMIUM</div>
-                <div class="payment-timer" id="paymentCountdown">Thời gian thanh toán còn lại: 10:00</div>
-                <div class="modal-price">100.000 đ</div>
-                
-                <div class="tab-buttons">
-                    <button class="tab-btn active" id="btnTabQr" onclick="switchTab('qr')">VietQR</button>
-                    <button class="tab-btn" id="btnTabCard" onclick="switchTab('card')">Thẻ Ngân Hàng (CARD)</button>
-                </div>
-                
-                <div class="tab-content active" id="contentQr">
-                    <img class="qr-img" id="imgVietQR" src="" alt="Mã VietQR">
-                    <div class="status-payment"><div class="spinner"></div><span>Đang chờ quét mã...</span></div>
-                </div>
-                
-                <div class="tab-content" id="contentCard">
-                    <form class="credit-form" onsubmit="validateAndPayCard(event)">
-                        <div class="card-number-wrapper">
-                            <input type="text" id="cardNumberInput" placeholder="Số thẻ" maxlength="19" required oninput="handleCardNumberInput(this)">
-                            <div class="card-logos">
-                                <img class="card-logo-img" id="logoVisa" src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa">
-                                <img class="card-logo-img" id="logoMastercard" src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard">
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" placeholder="MM/YY" maxlength="5" required id="cardExpiryInput" oninput="handleCardExpiryInput(this)">
-                            <input type="password" placeholder="CVC" maxlength="4" required id="cardCvcInput">
-                        </div>
-                        <input type="text" placeholder="Tên chủ thẻ" required id="cardNameInput" oninput="this.value = this.value.toUpperCase()">
-                        <button type="submit" class="btn-submit-pay">Thanh Toán Ngay</button>
-                    </form>
-                </div>
-            </div>
+            <img src="A.png" alt="Hướng dẫn" class="img-huong-dan">
         </div>
     </div>
 
@@ -541,184 +249,30 @@ var gioHoc = {
     6: "12h30 - 13h20", 7: "13h30 - 14h20", 8: "14h30 - 15h20", 9: "15h30 - 16h20", 10: "16h30 - 17h20"
 };
 
-var danhSachMonHoc = [];
-var listIdDaChon = [];
-var listNhomDuocChon = [];
-
-var mauBangPastel = ['#f0fdf4', '#f0f9ff', '#fff7ed', '#fdf4ff', '#fef2f2', '#fefce8', '#f5f3ff'];
-var mauTkbPastel = ['#bbf7d0', '#bae6fd', '#fed7aa', '#f5d0fe', '#fecaca', '#fef08a', '#ddd6fe'];
-
-function getMauNhomBang(nhomNum) {
-    var index = Math.abs(parseInt(nhomNum) || 0) % mauBangPastel.length;
-    return mauBangPastel[index];
-}
+var mauTkbPastel = ['#fecaca', '#fed7aa', '#fef08a', '#bbf7d0', '#bae6fd', '#ddd6fe', '#f5d0fe'];
 
 function getMauNhomTkb(nhomNum) {
     var index = Math.abs(parseInt(nhomNum) || 0) % mauTkbPastel.length;
     return mauTkbPastel[index];
 }
 
-function toggleKhungBoLoc() {
-    var noiDung = document.getElementById("noiDungBoLoc");
-    var btn = document.getElementById("btnToggleBoLoc");
-
-    if (noiDung.style.display === "none") {
-        noiDung.style.display = "block";
-        btn.innerText = "▲ Thu gọn";
-    } else {
-        noiDung.style.display = "none";
-        btn.innerText = "▼ Mở rộng";
-    }
+function openHuongDanModal() {
+    document.getElementById("huongDanModal").style.display = "flex";
 }
 
-function layTenNhomCon(mon) {
-    var kyTuCuoi = mon.malop.slice(-1);
-    if (kyTuCuoi === 'A' || kyTuCuoi === 'B') return 'NHÓM ' + mon.nhom + kyTuCuoi;
-    return 'NHÓM ' + mon.nhom;
+function closeHuongDanModal() {
+    document.getElementById("huongDanModal").style.display = "none";
 }
 
-function docChuoiTKB(chuoiTkb) {
-    var danhSachTkb = [];
-    var cacThu = chuoiTkb.split(';');
-    var tenThu = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
-
-    for (var i = 0; i < cacThu.length; i++) {
-        var noidung = cacThu[i];
-        if (noidung && noidung.trim() !== '' && i < 6) {
-            var cat = noidung.split(',');
-            var tiet = cat[0];
-            var phong = cat[1] || "";
-            if (tiet) {
-                var gio = tiet.split('-');
-                danhSachTkb.push({
-                    thuIndex: i,
-                    tietBD: parseInt(gio[0]),
-                    tietKT: parseInt(gio[1]),
-                    phongHoc: phong,
-                    textHienThi: tenThu[i] + " (" + gio[0] + "-" + gio[1] + ") " + phong
-                });
-            }
-        }
+window.onclick = function(event) {
+    var modal = document.getElementById("huongDanModal");
+    if (event.target == modal) {
+        closeHuongDanModal();
     }
-    return danhSachTkb;
-}
-
-function rutGonTenMon(tenMon) {
-    return tenMon.replace("(Blended learning)", "").trim();
-}
-
-function khoiTaoBoLoc() {
-    if (typeof dataGoc === 'undefined') return;
-
-    danhSachMonHoc = [];
-    var dsKhoa = [];
-
-    for (var i = 0; i < dataGoc.length; i++) {
-        var item = dataGoc[i];
-        
-        var khoaThat = parseInt(item.khoa);
-        var nhomThat = parseInt(item.nhom);
-
-        var tenGV = item.gv;
-        
-        if (typeof mapMaGV !== 'undefined' && mapMaGV[item.gv]) {
-            tenGV = mapMaGV[item.gv];
-        } else if (typeof mapGiangVien !== 'undefined' && mapGiangVien[item.malop]) {
-            tenGV = mapGiangVien[item.malop];
-        }
-
-        danhSachMonHoc.push({
-            id: item.id,
-            khoa: khoaThat,
-            nhom: nhomThat,
-            malop: item.malop,
-            ten: item.ten,
-            sl: item.sl,
-            gv: tenGV,
-            tkbGoc: item.tkb,
-            tuan: item.tuan,
-            lop: item.lop,
-            chiTietTkb: docChuoiTKB(item.tkb),
-            tenChuan: rutGonTenMon(item.ten)
-        });
-
-        if (!isNaN(khoaThat) && dsKhoa.indexOf(khoaThat) === -1) {
-            dsKhoa.push(khoaThat);
-        }
-    }
-
-    dsKhoa.sort(function(a, b){ return a - b; });
-
-    var selectKhoa = document.getElementById("select-khoa");
-    selectKhoa.innerHTML = '<option value="">-- Chọn khóa học --</option>';
-    for (var k = 0; k < dsKhoa.length; k++) {
-        selectKhoa.innerHTML += '<option value="' + dsKhoa[k] + '">Khóa ' + dsKhoa[k] + '</option>';
-    }
-}
-
-function thayDoiKhoaHoc() {
-    var khoaDaChon = document.getElementById("select-khoa").value;
-    var khuVucNhom = document.getElementById("khu-vuc-nhom");
-    var containerNhom = document.getElementById("container-checkbox-nhom");
-
-    if (!khoaDaChon) {
-        khuVucNhom.style.display = "none";
-        listNhomDuocChon = [];
-        renderDanhSachMon();
-        return;
-    }
-
-    var dsNhom = [];
-    for (var i = 0; i < danhSachMonHoc.length; i++) {
-        if (danhSachMonHoc[i].khoa == khoaDaChon) {
-            if (dsNhom.indexOf(danhSachMonHoc[i].nhom) === -1 && !isNaN(danhSachMonHoc[i].nhom)) {
-                dsNhom.push(danhSachMonHoc[i].nhom);
-            }
-        }
-    }
-
-    dsNhom.sort(function(a, b){ return a - b; });
-
-    var htmlCheckbox = '';
-    listNhomDuocChon = []; 
-    for (var n = 0; n < dsNhom.length; n++) {
-        var nhomNum = dsNhom[n];
-        htmlCheckbox += '<label class="item-nhom-checkbox">' +
-            '<input type="checkbox" value="' + nhomNum + '" onchange="capNhatNhomDuocChon()"> Nhóm ' + nhomNum +
-            '</label>';
-    }
-
-    containerNhom.innerHTML = htmlCheckbox;
-    khuVucNhom.style.display = "flex";
-    renderDanhSachMon();
-}
-
-function capNhatNhomDuocChon() {
-    listNhomDuocChon = [];
-    var checkboxes = document.querySelectorAll("#container-checkbox-nhom input[type='checkbox']:checked");
-    for (var i = 0; i < checkboxes.length; i++) {
-        listNhomDuocChon.push(parseInt(checkboxes[i].value));
-    }
-    renderDanhSachMon();
-}
-
-function kiemTraTrungLich(mon1, mon2) {
-    for (var a = 0; a < mon1.chiTietTkb.length; a++) {
-        for (var b = 0; b < mon2.chiTietTkb.length; b++) {
-            var slot1 = mon1.chiTietTkb[a];
-            var slot2 = mon2.chiTietTkb[b];
-            if (slot1.thuIndex === slot2.thuIndex) {
-                var maxStart = Math.max(slot1.tietBD, slot2.tietBD);
-                var minEnd = Math.min(slot1.tietKT, slot2.tietKT);
-                if (maxStart <= minEnd) return true;
-            }
-        }
-    }
-    return false;
 }
 
 function taoKhungTKB() {
-    var bodyTkb = document.getElementById('body-tkb');
+    var bodyTkb = document.getElementById("body-tkb-pasted");
     bodyTkb.innerHTML = '';
     for (var tiet = 1; tiet <= 10; tiet++) {
         var tr = document.createElement('tr');
@@ -731,229 +285,137 @@ function taoKhungTKB() {
     }
 }
 
-function renderTKB() {
-    taoKhungTKB();
-    var listMonDaChon = [];
-    for (var i = 0; i < danhSachMonHoc.length; i++) {
-        if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
-            listMonDaChon.push(danhSachMonHoc[i]);
-        }
-    }
-
-    for (var i = 0; i < listMonDaChon.length; i++) {
-        var mon = listMonDaChon[i];
-        for (var j = 0; j < mon.chiTietTkb.length; j++) {
-            var slot = mon.chiTietTkb[j];
-            var oBatDau = document.getElementById('o-' + slot.thuIndex + '-' + slot.tietBD);
-            if (oBatDau) {
-                var soTietHop = slot.tietKT - slot.tietBD + 1;
-                for (var t = slot.tietBD + 1; t <= slot.tietKT; t++) {
-                    var oCuaXoa = document.getElementById('o-' + slot.thuIndex + '-' + t);
-                    if (oCuaXoa) oCuaXoa.parentNode.removeChild(oCuaXoa);
+function timThongTinInDatabase(maLopHp) {
+    if (typeof dataGoc !== 'undefined' && Array.isArray(dataGoc)) {
+        for (var i = 0; i < dataGoc.length; i++) {
+            if (dataGoc[i].malop === maLopHp) {
+                var tenGV = dataGoc[i].gv;
+                if (typeof mapMaGV !== 'undefined' && mapMaGV[dataGoc[i].gv]) {
+                    tenGV = mapMaGV[dataGoc[i].gv];
+                } else if (typeof mapGiangVien !== 'undefined' && mapGiangVien[dataGoc[i].malop]) {
+                    tenGV = mapGiangVien[dataGoc[i].malop];
                 }
-                oBatDau.rowSpan = soTietHop;
-                
-                var mauNhom = getMauNhomTkb(mon.nhom);
-                oBatDau.innerHTML = '<div class="the-mon-hoc" style="background-color: ' + mauNhom + ';">' +
-                    '<b>' + mon.ten + '</b><br>' +
-                    '<span>' + layTenNhomCon(mon) + '</span><br>' +
-                    '<span>GV: ' + mon.gv + '</span><br>' +
-                    '<span>' + (slot.phongHoc || 'N/A') + '</span>' +
-                    '</div>';
+                return {
+                    ten: dataGoc[i].ten,
+                    gv: tenGV,
+                    nhom: dataGoc[i].nhom
+                };
             }
         }
     }
+    return null;
 }
 
-function renderDanhSachMon() {
-    var bodyDanhSach = document.getElementById('body-danh-sach');
-    bodyDanhSach.innerHTML = '';
-
-    var khoaDaChon = document.getElementById("select-khoa").value;
-
-    var danhSachHienThi = [];
-    if (khoaDaChon && listNhomDuocChon.length > 0) {
-        for (var i = 0; i < danhSachMonHoc.length; i++) {
-            var mon = danhSachMonHoc[i];
-            if (mon.khoa == khoaDaChon && listNhomDuocChon.indexOf(mon.nhom) !== -1) {
-                danhSachHienThi.push(mon);
-            }
-        }
+function xuLyParseVaVeTKB() {
+    var rawText = document.getElementById("inputPasteData").value.trim();
+    if (!rawText) {
+        alert("Vui lòng dán dữ liệu Đăng ký học phần vào ô trước!");
+        return;
     }
 
-    var listMonSelectedObj = [];
-    for (var i = 0; i < danhSachMonHoc.length; i++) {
-        if (listIdDaChon.indexOf(danhSachMonHoc[i].id) !== -1) {
-            listMonSelectedObj.push(danhSachMonHoc[i]);
-        }
+    taoKhungTKB();
+
+    var tenThuMap = {
+        "Thứ 2": 0, "Thứ 3": 1, "Thứ 4": 2, "Thứ 5": 3, "Thứ 6": 4, "Thứ 7": 5
+    };
+
+    var codeRegex = /(\d{6,10}\.\d{4}\.\d{2}\.[A-Za-z0-9]+)/g;
+    var matches = [];
+    var match;
+
+    while ((match = codeRegex.exec(rawText)) !== null) {
+        matches.push({
+            code: match[1],
+            index: match.index
+        });
     }
 
-    var currentNhom = null;
-
-    for (var i = 0; i < danhSachHienThi.length; i++) {
-        var mon = danhSachHienThi[i];
-
-        if (mon.nhom !== currentNhom) {
-            currentNhom = mon.nhom;
-            var trNhom = document.createElement('tr');
-            trNhom.className = 'header-nhom';
-            trNhom.innerHTML = '<td colspan="6" align="center">NHÓM ' + currentNhom + '</td>';
-            bodyDanhSach.appendChild(trNhom);
-        }
-
-        var tr = document.createElement('tr');
-        var isDaChon = listIdDaChon.indexOf(mon.id) !== -1;
-        var isTrungTen = false;
-        var isTrungGio = false;
-
-        for (var k = 0; k < listMonSelectedObj.length; k++) {
-            var monSelected = listMonSelectedObj[k];
-            if (monSelected.id !== mon.id) {
-                if (monSelected.tenChuan === mon.tenChuan) isTrungTen = true;
-                if (kiemTraTrungLich(monSelected, mon)) isTrungGio = true;
-            }
-        }
-
-        if (isDaChon) {
-            tr.className = 'mon-da-chon';
-        } else if (isTrungTen || isTrungGio) {
-            tr.className = 'mon-bi-khoa';
-        } else {
-            tr.style.backgroundColor = getMauNhomBang(mon.nhom);
-        }
-
-        var textTkb = '';
-        for (var m = 0; m < mon.chiTietTkb.length; m++) {
-            textTkb += mon.chiTietTkb[m].textHienThi + '<br>';
-        }
-
-        var isChecked = isDaChon ? 'checked' : '';
-        tr.innerHTML = '<td align="center"><input type="checkbox" ' + isChecked + ' onchange="clickChonMon(' + mon.id + ')"></td>' +
-            '<td><font color="#000000">' + mon.ten + '</font></td>' +
-            '<td><font size="2" color="#000000">' + mon.malop + '</font></td>' +
-            '<td align="center"><font color="#000000"><b>' + mon.nhom + '</b></font></td>' +
-            '<td><font color="#000000">' + mon.gv + '</font></td>' +
-            '<td><font size="1" color="#000000">' + (textTkb || '-') + '</font></td>';
-
-        bodyDanhSach.appendChild(tr);
+    if (matches.length === 0) {
+        alert("Không nhận diện được lịch học! Vui lòng dán đúng bảng Đăng ký học phần.");
+        return;
     }
-}
 
-function clickChonMon(idMon) {
-    var index = listIdDaChon.indexOf(idMon);
-    if (index !== -1) listIdDaChon.splice(index, 1);
-    else listIdDaChon.push(idMon);
+    var dsMonParse = [];
 
-    renderDanhSachMon();
-    renderTKB();
-}
+    for (var i = 0; i < matches.length; i++) {
+        var startIdx = matches[i].index;
+        var endIdx = (i + 1 < matches.length) ? matches[i + 1].index : rawText.length;
+        var blockText = rawText.substring(startIdx, endIdx);
+        var maLopHp = matches[i].code;
 
-var paymentInterval = null, countdownInterval = null;
+        var arrP = maLopHp.split('.');
+        var nhom = arrP[arrP.length - 1] || "1";
 
-function openFeaturesModal() { 
-    document.getElementById("viewFeatures").style.display = "block"; 
-    document.getElementById("viewPayment").style.display = "none"; 
-    document.getElementById("paymentModal").style.display = "flex"; 
-}
-function closePaymentModal() { document.getElementById("paymentModal").style.display = "none"; stopTimers(); }
-function backToFeatures() { document.getElementById("viewFeatures").style.display = "block"; document.getElementById("viewPayment").style.display = "none"; stopTimers(); }
-function stopTimers() { if (paymentInterval) clearInterval(paymentInterval); if (countdownInterval) clearInterval(countdownInterval); }
+        var dbInfo = timThongTinInDatabase(maLopHp);
+        var tenMon = dbInfo ? dbInfo.ten : "";
+        var giangVien = dbInfo ? dbInfo.gv : "";
 
-function goToPaymentMethods() {
-    document.getElementById("viewFeatures").style.display = "none";
-    document.getElementById("viewPayment").style.display = "block";
-    var urlVietQr = "https://img.vietqr.io/image/ICB-0969435625-compact2.png?amount=100000&addInfo=" + encodeURIComponent("DANG KY VDUT PREMIUM") + "&accountName=" + encodeURIComponent("PHAN LE THANH VINH");
-    document.getElementById("imgVietQR").src = urlVietQr;
-    startCheckingPayment("100000", "DANG KY VDUT PREMIUM");
-    startCountdownTimer(600);
-}
-
-function startCountdownTimer(seconds) {
-    var timerDisplay = document.getElementById("paymentCountdown");
-    countdownInterval = setInterval(function() {
-        seconds--;
-        var mins = Math.floor(seconds / 60); var secs = seconds % 60;
-        timerDisplay.innerText = "Thời gian thanh toán còn lại: " + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
-        if (seconds <= 0) { clearInterval(countdownInterval); closePaymentModal(); }
-    }, 1000);
-}
-
-function startCheckingPayment(amount, description) {
-    paymentInterval = setInterval(function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "https://oauth.casso.vn/v2/transactions?pageSize=5&sort=DESC", true);
-        xhr.setRequestHeader("Authorization", "Apikey KHONG_GHI_CHU_XOA_SACH_MA_API_KEY_CUA_BAN_TAI_DAY");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var res = JSON.parse(xhr.responseText);
-                if (res && res.data && res.data.records) {
-                    for (var i = 0; i < res.data.records.length; i++) {
-                        if (res.data.records[i].amount >= parseInt(amount) && res.data.records[i].description.toUpperCase().indexOf(description.toUpperCase()) !== -1) {
-                            clearInterval(paymentInterval);
-                            alert("Kích hoạt Premium thành công!");
-                            closePaymentModal();
-                            break;
-                        }
+        if (!tenMon || !giangVien) {
+            var lines = blockText.split(/[\n\r]+/);
+            for (var l = 0; l < lines.length; l++) {
+                var lineClean = lines[l].trim();
+                if (lineClean && lineClean.indexOf(maLopHp) === -1 && !lineClean.match(/^Thứ\s*[2-7]/i) && !lineClean.match(/^\d+$/)) {
+                    if (!tenMon) {
+                        tenMon = lineClean.replace(/^\d+\s*/, '');
+                    } else if (!giangVien) {
+                        giangVien = lineClean.replace(/\s*Thứ.*$/, '').replace(/^\d+\s*/, '');
                     }
                 }
             }
-        };
-        xhr.send();
-    }, 3000);
-}
+        }
 
-function handleCardNumberInput(input) {
-    var value = input.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
-    var parts = []; for (var i = 0; i < value.length; i += 4) parts.push(value.substring(i, i + 4));
-    input.value = parts.join(' ');
-    document.getElementById("logoVisa").classList.remove("active"); 
-    document.getElementById("logoMastercard").classList.remove("active");
-    if (value.indexOf('4') === 0) document.getElementById("logoVisa").classList.add("active");
-    else if (value.indexOf('5') === 0) document.getElementById("logoMastercard").classList.add("active");
-}
+        var tkbRegex = /(Thứ\s*[2-7])\s*:\s*(\d+)-(\d+)\s*,\s*([^\s\t\r\n\,]+)/gi;
+        var tkbMatch;
 
-function handleCardExpiryInput(input) {
-    var value = input.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
-    input.value = value.length >= 2 ? value.substring(0, 2) + '/' + value.substring(2, 4) : value;
-}
+        while ((tkbMatch = tkbRegex.exec(blockText)) !== null) {
+            var thuStr = tkbMatch[1].replace(/\s+/g, ' ').trim();
+            var tietBD = parseInt(tkbMatch[2]);
+            var tietKT = parseInt(tkbMatch[3]);
+            var phong = tkbMatch[4].trim().replace(/-1\d{1,2}.*$/g, '');
 
-function checkLuhn(cardNumber) {
-    var cleanNumber = cardNumber.replace(/\s+/g, ''); if (cleanNumber.length < 13) return false;
-    var sum = 0, shouldDouble = false;
-    for (var i = cleanNumber.length - 1; i >= 0; i--) {
-        var digit = parseInt(cleanNumber.charAt(i));
-        if (shouldDouble) { digit *= 2; if (digit > 9) digit -= 9; }
-        sum += digit; shouldDouble = !shouldDouble;
+            if (tenThuMap[thuStr] !== undefined) {
+                dsMonParse.push({
+                    maLopHp: maLopHp,
+                    tenMon: tenMon || maLopHp,
+                    nhom: nhom,
+                    gv: giangVien || "",
+                    thuIndex: tenThuMap[thuStr],
+                    tietBD: tietBD,
+                    tietKT: tietKT,
+                    phong: phong
+                });
+            }
+        }
     }
-    return (sum % 10 === 0);
-}
 
-function validateAndPayCard(event) { 
-    event.preventDefault(); 
-    if (!checkLuhn(document.getElementById("cardNumberInput").value)) { alert("Số thẻ không hợp lệ!"); return; } 
-    alert("Cảm ơn bạn! Hệ thống đang xử lý giao dịch thẻ."); 
-}
+    if (dsMonParse.length === 0) {
+        alert("Không nhận diện được lịch học! Vui lòng dán đúng bảng Đăng ký học phần.");
+        return;
+    }
 
-function switchTab(tab) {
-    var keys = ['qr', 'card'];
-    var ids = { qr: { btn: 'btnTabQr', content: 'contentQr' }, card: { btn: 'btnTabCard', content: 'contentCard' } };
-    for (var i = 0; i < keys.length; i++) {
-        if (keys[i] === tab) { 
-            document.getElementById(ids[keys[i]].btn).classList.add("active"); 
-            document.getElementById(ids[keys[i]].content).classList.add("active"); 
-        } else { 
-            document.getElementById(ids[keys[i]].btn).classList.remove("active"); 
-            document.getElementById(ids[keys[i]].content).classList.remove("active"); 
+    for (var k = 0; k < dsMonParse.length; k++) {
+        var item = dsMonParse[k];
+        var oBatDau = document.getElementById('o-' + item.thuIndex + '-' + item.tietBD);
+        if (oBatDau) {
+            var soTietHop = item.tietKT - item.tietBD + 1;
+            for (var t = item.tietBD + 1; t <= item.tietKT; t++) {
+                var oCuaXoa = document.getElementById('o-' + item.thuIndex + '-' + t);
+                if (oCuaXoa) oCuaXoa.parentNode.removeChild(oCuaXoa);
+            }
+            oBatDau.rowSpan = soTietHop;
+
+            var mauNhom = getMauNhomTkb(item.nhom);
+            oBatDau.innerHTML = '<div class="the-mon-hoc" style="background-color: ' + mauNhom + ';">' +
+                '<b>' + item.tenMon + '</b><br>' +
+                '<span>NHÓM ' + item.nhom + '</span><br>' +
+                (item.gv ? '<span>GV: ' + item.gv + '</span><br>' : '') +
+                '<span>' + item.phong + '</span>' +
+                '</div>';
         }
     }
 }
 
-window.onclick = function(event) { if (event.target == document.getElementById("paymentModal")) closePaymentModal(); }
-
-khoiTaoBoLoc();
-renderDanhSachMon();
-renderTKB();
+taoKhungTKB();
 </script>
 
 </body>
