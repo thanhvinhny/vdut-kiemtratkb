@@ -172,6 +172,28 @@
             margin-top: 5px;
             color: #000000;
         }
+
+        .btn-truy-cap-dut {
+            display: inline-block;
+            margin-top: 10px;
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-truy-cap-dut:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
     </style>
 </head>
 <body>
@@ -203,13 +225,16 @@
 
     <div class="cum-nut-goc-phai">
         <button class="btn-huong-dan" onclick="openHuongDanModal()">HƯỚNG DẪN SỬ DỤNG</button>
-        <a href="index.html" class="btn-quay-lai">QUAY LẠI</a>
+        <a href="https://thanhvinhny.github.io/vdut-kiemtratkb" class="btn-quay-lai">QUAY LẠI</a>
     </div>
 
     <div class="modal-huong-dan" id="huongDanModal">
         <div class="modal-content-hd">
             <span class="close-modal-hd" onclick="closeHuongDanModal()">&times;</span>
             <div class="text-huong-dan">COPY NHỮNG THÔNG TIN NHƯ ẢNH</div>
+            <div>
+                <a href="https://dangkytinchi.dut.udn.vn/" target="_blank" class="btn-truy-cap-dut">TRUY CẬP TRANG ĐĂNG KÝ TÍN CHỈ - DUT</a>
+            </div>
             <img src="A.png" alt="Hướng dẫn" class="img-huong-dan">
         </div>
     </div>
